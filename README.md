@@ -1,1 +1,1 @@
-# freaking-flutter
+# frickin-flutter
