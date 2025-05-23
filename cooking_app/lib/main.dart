@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cooking_app/auth/gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://egdumlkkfxknccmvgzxo.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnZHVtbGtrZnhrbmNjbXZnenhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5Njk2MDEsImV4cCI6MjA2MzU0NTYwMX0.9yT_wv-72Hlea4E0Rlo4p8V_aWObnvxksx1UOTdIQlc',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnZHVtbGtrZnhrbmNjbXZnenhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5Njk2MDEsImV4cCI6MjA2MzU0NTYwMX0.9yT_wv-72Hlea4E0Rlo4p8V_aWObnvxksx1UOTdIQlc',
   );
   runApp(const MyApp());
 }
@@ -36,79 +38,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AuthGate(), // ← Auth gate decides between login or home
-    );
-  }
-}
-
-class AuthGate extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final session = Supabase.instance.client.auth.currentSession;
-    return session != null
-        ? const MyHomePage(title: 'Flutter Demo Home Page')
-        : const LoginScreen();
-  }
-}
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  Future<void> signIn() async {
-    try {
-      await Supabase.instance.client.auth.signInWithPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      setState(() {}); // Trigger AuthGate to rebuild
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
-      );
-    }
-  }
-
-  Future<void> signUp() async {
-    try {
-      await Supabase.instance.client.auth.signUp(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Check your email to confirm sign-up.')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Signup failed: $e')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login or Sign Up')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(controller: emailController, decoration: const InputDecoration(labelText: 'Email')),
-            TextField(controller: passwordController, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: signIn, child: const Text('Login')),
-            TextButton(onPressed: signUp, child: const Text('Sign Up')),
-          ],
-        ),
-      ),
+      home: Gate(), // ← Auth gate decides between login or home
     );
   }
 }
@@ -132,68 +62,76 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  Future<void> _logout() async {
-    await Supabase.instance.client.auth.signOut();
-    setState(() {}); // Force return to login screen
+  Widget home(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("App name I'm not sure this works")),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(),
+            //I think you put the content here but I can't see what I'm building
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    final user = Supabase.instance.client.auth.currentUser;
-
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-        actions: [
-          IconButton(onPressed: _logout, icon: const Icon(Icons.logout)),
-        ],
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Welcome, ${user?.email ?? "Unknown"}'),
-            const SizedBox(height: 24),
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return Scaffold();
   }
 }
+
+  // Future<void> _logout() async {
+  //   await Supabase.instance.client.auth.signOut();
+  //   setState(() {}); // Force return to login screen
+  // }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   // This method is rerun every time setState is called, for instance as done
+  //   // by the _incrementCounter method above.
+  //   //
+  //   // The Flutter framework has been optimized to make rerunning build methods
+  //   // fast, so that you can just rebuild anything that needs updating rather
+  //   // than having to individually change instances of widgets.
+  //   final user = Supabase.instance.client.auth.currentUser;
+
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       // TRY THIS: Try changing the color here to a specific color (to
+  //       // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+  //       // change color while the other colors stay the same.
+  //       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+  //       // Here we take the value from the MyHomePage object that was created by
+  //       // the App.build method, and use it to set our appbar title.
+  //       title: Text(widget.title),
+  //       actions: [
+  //         IconButton(onPressed: _logout, icon: const Icon(Icons.logout)),
+  //       ],
+  //     ),
+  //     body: Center(
+  //       // Center is a layout widget. It takes a single child and positions it
+  //       // in the middle of the parent.
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: <Widget>[
+  //           Text('Welcome, ${user?.email ?? "Unknown"}'),
+  //           const SizedBox(height: 24),
+  //           const Text('You have pushed the button this many times:'),
+  //           Text(
+  //             '$_counter',
+  //             style: Theme.of(context).textTheme.headlineMedium,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //     floatingActionButton: FloatingActionButton(
+  //       onPressed: _incrementCounter,
+  //       tooltip: 'Increment',
+  //       child: const Icon(Icons.add),
+  //     ), // This trailing comma makes auto-formatting nicer for build methods.
+  //   );
+  // }
