@@ -1,3 +1,4 @@
+import 'package:cooking_app/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/auth/gate.dart';
@@ -36,9 +37,11 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 255, 255, 255),
+        ),
       ),
-      home: Gate(), // ← Auth gate decides between login or home
+      home: LoginPage(), // ← Auth gate decides between login or home
     );
   }
 }

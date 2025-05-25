@@ -1,22 +1,31 @@
 import 'package:cooking_app/auth/auth.dart';
+import 'package:cooking_app/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:cooking_app/pages/reg.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class Reg extends StatefulWidget {
+  const Reg({super.key});
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Reg> createState() => _regPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _regPageState extends State<Reg> {
   final auth = Auth();
   final _email = TextEditingController();
   final _password = TextEditingController();
-  void login() async {
+  final _confirm = TextEditingController();
+  void signUp() async {
     final email = _email.text.trim();
     final password = _password.text;
+    final confirm = _confirm.text;
+    if (confirm != password) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+      return;
+    }
     try {
-      await auth.signIn(email, password);
+      await auth.signUp(email, password);
+      Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -37,18 +46,16 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextField(
             controller: _password,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
+            decoration: const InputDecoration(labelText: "Password"),
           ),
-
-          ElevatedButton(onPressed: login, child: const Text("Login")),
+          ElevatedButton(onPressed: signUp, child: const Text("Register")),
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Reg()),
+              MaterialPageRoute(builder: (context) => const LoginPage()),
             ),
-            child: const Center(child: Text("Sign Up")),
+            child: const Center(child: Text("Go Back")),
           ),
         ],
       ),
