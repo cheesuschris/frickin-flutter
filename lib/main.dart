@@ -1,7 +1,6 @@
 import 'package:cooking_app/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:cooking_app/auth/gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

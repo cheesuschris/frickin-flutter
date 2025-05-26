@@ -1,4 +1,3 @@
-import 'package:cooking_app/auth/auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
