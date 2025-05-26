@@ -20,7 +20,6 @@ class _AuthGateState extends State<AuthGate> {
   }
 
   Future<void> _checkInitialAuthState() async {
-    // Force an immediate auth check
     final session = Supabase.instance.client.auth.currentSession;
     debugPrint('Initial Session Check: ${session != null}');
     if (mounted) {
@@ -43,7 +42,6 @@ class _AuthGateState extends State<AuthGate> {
         debugPrint('Auth State: ${snapshot.data?.event}');
         debugPrint('Connection State: ${snapshot.connectionState}');
         
-        // Get current session directly
         final currentSession = Supabase.instance.client.auth.currentSession;
         
         if (currentSession != null) {
