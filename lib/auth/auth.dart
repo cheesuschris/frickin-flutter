@@ -11,7 +11,7 @@ class Auth {
 
   Future<bool> isEmailVerified() async {
     final user = _supabase.auth.currentUser;
-    return user?.emailVerified ?? false;
+    return user?.emailConfirmedAt != null;
   }
 
   Future<AuthResponse> signUp(String email, String password) async {
