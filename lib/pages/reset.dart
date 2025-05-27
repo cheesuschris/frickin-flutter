@@ -1,3 +1,1 @@
-class resetPassword extends StatefulWidget {
-    
-}
+class resetPassword extends StatefulWidget {}

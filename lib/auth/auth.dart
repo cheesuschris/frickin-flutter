@@ -25,10 +25,11 @@ class Auth {
   Future<void> resetPassword(String email) async {
     await _supabase.auth.resetPasswordForEmail(
       email,
-      redirectTo: 'http://localhost:3000/reset-password',  // You'll want to change this URL for production
+      redirectTo:
+          'http://localhost:3000/reset-password', // You'll want to change this URL for production
     );
   }
-  
+
   String? getEmail() {
     final session = _supabase.auth.currentSession;
     final curr = session?.user;
