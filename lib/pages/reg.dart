@@ -25,7 +25,9 @@ class _regPageState extends State<Reg> {
     }
     try {
       await auth.signUp(email, password);
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -38,26 +40,42 @@ class _regPageState extends State<Reg> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          TextField(
-            controller: _email,
-            decoration: const InputDecoration(labelText: 'Username'),
-          ),
-          TextField(
-            controller: _password,
-            decoration: const InputDecoration(labelText: "Password"),
-          ),
-          ElevatedButton(onPressed: signUp, child: const Text("Register")),
-          const SizedBox(height: 12),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
+      appBar: AppBar(
+        title: const Text('Register'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            TextField(
+              controller: _email,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
             ),
-            child: const Center(child: Text("Go Back")),
-          ),
-        ],
+            const SizedBox(height: 16),
+            TextField(
+              controller: _password,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _confirm,
+              decoration: const InputDecoration(labelText: 'Confirm Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: signUp,
+              child: const Text("Register"),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Back to Login"),
+            ),
+          ],
+        ),
       ),
     );
   }
