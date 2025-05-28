@@ -108,6 +108,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
               child: const Text("Don't have an account? Sign Up"),
             ),
+            TextButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Reset()),
+              ),
+              child: const Text("Forgot Password?"),
+            ),
           ],
         ),
       ),
