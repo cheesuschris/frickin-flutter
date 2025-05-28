@@ -23,37 +23,43 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> login() async {
-    if (_email.text.isEmpty || _password.text.isEmpty) {
+    final email = _email.text.trim();
+    final password = _password.text;
+
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in all fields")),
       );
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      await auth.signIn(_email.text.trim(), _password.text);
-      // No need to navigate - AuthGate will handle this
-    } catch (e) {
-      if (mounted) {
+      final response = await auth.signIn(email, password);
+      if (!mounted) return;
+      
+      if (response.user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString().contains('AuthException')
-                  ? "Invalid email or password"
-                  : "An error occurred. Please try again.",
-            ),
-          ),
+          const SnackBar(content: Text("Login failed - please try again")),
         );
       }
+    } catch (e) {
+      if (!mounted) return;
+      
+      String message = "An error occurred";
+      if (e.toString().contains('Invalid login credentials')) {
+        message = "Incorrect email or password";
+      } else if (e.toString().contains('Email not confirmed')) {
+        message = "Please verify your email first";
+      }
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
   }

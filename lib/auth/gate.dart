@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/pages/login.dart';
-import 'package:cooking_app/pages/prof.dart';
+import 'package:cooking_app/pages/home.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -23,7 +23,7 @@ class AuthGate extends StatelessWidget {
 
         final authState = snapshot.data;
         if (authState?.session != null) {
-          return const ProfilePage();
+          return const HomePage();
         }
 
         return const LoginPage();
