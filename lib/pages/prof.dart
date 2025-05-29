@@ -1,3 +1,4 @@
+import 'package:cooking_app/pages/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,9 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
       await Supabase.instance.client.auth.signOut();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error signing out: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -28,16 +29,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildLogoutButton() {
     return IconButton(
-      icon: _isLoading 
-        ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
-          )
-        : const Icon(Icons.logout),
+      icon: _isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : const Icon(Icons.logout),
       onPressed: _isLoading ? null : _signOut,
     );
   }
@@ -61,6 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+      // bottomNavigationBar: navBar(),
     );
   }
 }

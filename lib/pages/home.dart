@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cooking_app/pages/prof.dart';
+import 'package:cooking_app/pages/navbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,20 +11,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Cooking App'),
-        backgroundColor: Colors.green,
-      ),
+      appBar: AppBar(title: Text('Cooking App'), backgroundColor: Colors.green),
       body: Container(
         color: Colors.white,
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(12),
         child: Column(
           children: [
             Container(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
                 },
                 child: Text('Profile'),
               ),
@@ -31,19 +32,14 @@ class _HomePageState extends State<HomePage> {
             Container(
               alignment: Alignment.center,
               child: ClipOval(
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  color: Colors.black,
-                ),
+                child: Container(width: 100, height: 100, color: Colors.black),
               ),
             ),
-            Container(
-              child: Text('This is where the app goes ig'),
-            ),
+            Container(child: Text('This is where the app goes ig')),
           ],
         ),
       ),
+      // bottomNavigationBar: navBar(),
     );
   }
 }
