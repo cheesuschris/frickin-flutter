@@ -59,22 +59,24 @@ class _HomePageState extends State<HomePage> {
           )
       ), 
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         color: Colors.white,
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
             Container(
-              alignment: Alignment.center,
-              child: ClipOval(
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  color: Colors.black,
-                ),
-              ),
+              child: Text('Cheesey Chrises Cooking App', style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              ),),
             ),
             Container(
-              child: Text('This is where the app goes ig'),
+              child: Text('Welcome to the Cheesey Chrises Cooking App', style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+              ),),
             ),
           ],
         ),
