@@ -13,51 +13,44 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.green,
-        title:  
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage()));
-                },
-                child: Text('Home', style: TextStyle(color: Colors.black)),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
-                },
-                child: Text('Search', style: TextStyle(color: Colors.black)),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritesPage()));
-                },
-                child: Text('Favorites', style: TextStyle(color: Colors.black)),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-                },
-                child: Text('Profile', style: TextStyle(color: Colors.black),),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                ),
-              ),
-            ]
-          )
-      ), 
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+        onTap: (int index) {
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LandingPage()),
+            );
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SearchPage()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FavoritesPage()),
+            );
+          } else if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
+            );
+          }
+        },
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -66,17 +59,20 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Container(
-              child: Text('Cheesey Chrises Cooking App', style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              ),),
+              child: Text(
+                'Cheesey Chrises Cooking App',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
             ),
             Container(
-              child: Text('Welcome to the Cheesey Chrises Cooking App', style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-              ),),
+              child: Text(
+                'Welcome to the Cheesey Chrises Cooking App',
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+              ),
             ),
           ],
         ),
