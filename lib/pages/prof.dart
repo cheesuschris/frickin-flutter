@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,9 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
       await Supabase.instance.client.auth.signOut();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error signing out: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -28,27 +29,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildLogoutButton() {
     return IconButton(
-      icon: _isLoading 
-        ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
-          )
-        : const Icon(Icons.logout),
+      icon: _isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : const Icon(Icons.logout),
       onPressed: _isLoading ? null : _signOut,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [_buildLogoutButton()],
-      ),
+    return MainScaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -61,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+      currentIndex: 3,
     );
   }
 }

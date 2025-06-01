@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -10,21 +11,17 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Landing Page'),
-      ),
+    return MainScaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Welcome to the Landing Page',
-            ),
+            Text('Welcome to the Home Page'),
             const SizedBox(height: 20),
           ],
         ),
       ),
+      currentIndex: 0,
     );
   }
 }
