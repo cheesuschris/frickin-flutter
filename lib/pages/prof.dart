@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
+import 'package:cooking_app/pages/settings/setmain.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -38,8 +39,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 color: Colors.white,
               ),
             )
-          : const Icon(Icons.logout),
-      onPressed: _isLoading ? null : _signOut,
+          : const Icon(Icons.settings),
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => Setmain()),
+        );
+      },
     );
   }
 
@@ -59,6 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       currentIndex: 3,
+      actions: [_buildLogoutButton()],
     );
   }
 }

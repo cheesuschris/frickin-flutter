@@ -7,13 +7,13 @@ import 'package:cooking_app/pages/prof.dart';
 class MainScaffold extends StatelessWidget {
   final Widget body;
   final int currentIndex;
-
+  final List<Widget>? actions;
   const MainScaffold({
     required this.body,
     required this.currentIndex,
+    this.actions,
     super.key,
   });
-
   void _navigate(BuildContext context, int index) {
     if (index == currentIndex) return;
 
@@ -41,6 +41,11 @@ class MainScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: Text("Cheesy Cooking app"),
+        actions: actions,
+      ),
       body: body,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
