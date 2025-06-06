@@ -3,6 +3,7 @@ import 'package:cooking_app/pages/landing.dart';
 import 'package:cooking_app/pages/search.dart';
 import 'package:cooking_app/pages/favorites.dart';
 import 'package:cooking_app/pages/prof.dart';
+import 'package:cooking_app/pages/post.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget body;
@@ -26,9 +27,12 @@ class MainScaffold extends StatelessWidget {
         page = const SearchPage();
         break;
       case 2:
-        page = const FavoritesPage();
+        page = const PostPage();
         break;
       case 3:
+        page = const FavoritesPage();
+        break;
+      case 4:
         page = const ProfilePage();
         break;
       default:
@@ -57,6 +61,7 @@ class MainScaffold extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Post'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorites',

@@ -3,6 +3,7 @@ import 'package:cooking_app/pages/prof.dart';
 import 'package:cooking_app/pages/favorites.dart';
 import 'package:cooking_app/pages/landing.dart';
 import 'package:cooking_app/pages/search.dart';
+import 'package:cooking_app/pages/post.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Post'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorites',
@@ -70,10 +72,16 @@ class _HomePageState extends State<HomePage> {
             case 2:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const FavoritesPage()),
+                MaterialPageRoute(builder: (_) => const PostPage()),
               );
               break;
             case 3:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FavoritesPage()),
+              );
+              break;
+            case 4:
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const ProfilePage()),
