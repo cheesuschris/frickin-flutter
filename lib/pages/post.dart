@@ -87,17 +87,17 @@ class _PostPageState extends State<PostPage> {
                 children: [
                   TextFormField(
                     controller: _recipeController,
-                    decoration: const InputDecoration(labelText: 'Recipe'),
+                    decoration: const InputDecoration(labelText: 'Recipe Name'),
                     validator: (value) => value == null || value.isEmpty ? 'Enter a recipe' : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _initImageController,
-                    decoration: const InputDecoration(labelText: 'Initial Image URL'),
+                    decoration: const InputDecoration(labelText: 'Main Image URL'),
                     validator: (value) => value == null || value.isEmpty ? 'Enter an image URL' : null,
                   ),
                   const SizedBox(height: 12),
-                  const Text("Follow-Up Images"),
+                  const Text("Other Images"),
                   ..._followUpControllers.asMap().entries.map((entry) {
                     final index = entry.key;
                     final controller = entry.value;
@@ -126,7 +126,7 @@ class _PostPageState extends State<PostPage> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _captionController,
-                    decoration: const InputDecoration(labelText: 'Caption'),
+                    decoration: const InputDecoration(labelText: 'Recipe'),
                     maxLines: 2,
                   ),
                   const SizedBox(height: 20),
