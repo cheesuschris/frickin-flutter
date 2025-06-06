@@ -7,23 +7,24 @@ struct User {
     pub username: String,
     pub profilePicture: String,
     pub posts: Vec<Post>,
-    pub score: f32,
     pub bio: String,
     pub about: String,
     pub privateProfileEnabled: bool
-    pub userCreated: DateTime<Utc>
+    pub useerCreated: DateTime<Utc>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Profile {
     pub user: User,
-    pub followers: Vec<String>,
-    pub following: Vec<String>,
+    pub followers: Vec<User>,
+    pub following: Vec<User>,
     pub mutuals: Vec<User>,
     pub bookmarks: Vec<Post>,
     pub displayProfilePosts: Vec<Post>,
     pub settings: Setings,
-    pub verifiedEnabled: bool
+    pub verifiedEnabled: bool,
+    pub followerCount: i32,
+    pub followingCount: i32
 }
 
 #[derive(Debug, Serialize, Deserialize)]
