@@ -46,15 +46,13 @@ class _PostPageState extends State<PostPage> {
         'caption': _captionController.text,
       };
 
-      print("📦 Post created: $post");
-
-      // TODO: Send post to backend
+      // add backend here
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Post submitted!")),
       );
 
-      // Clear form
+      // clear form
       _recipeController.clear();
       _initImageController.clear();
       _captionController.clear();
