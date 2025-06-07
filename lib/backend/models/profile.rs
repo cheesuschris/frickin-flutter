@@ -6,7 +6,7 @@ use super::settings::Settings;
 impl Profile {
     pub fn new(user: User, followers: Vec<User> following: Vec<User>, 
     mutuals: Vec<User>, bookmarks: Vec<Post>, displayProfilePosts: Vec<Post>,
-    settings: Settings, verifiedEnabled: bool, followerCount: i32, followingCount: i32) -> Profile {
+    settings: Settings, verifiedEnabled: bool) -> Profile {
         Profile {
             user,
             followers: mut Vec<User>,
@@ -27,6 +27,7 @@ impl Profile {
         self.followers.push(user1);
         self.incFollower();
     }
+    
     fn incFollower(&mut self) {
         self.followerCount += 1;
     }
