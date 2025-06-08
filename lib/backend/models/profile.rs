@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
+use flutter_rust_bridge::frb;
+mod models;
+pub use models::*;
 
-use super::user::User;
-use super::settings::Settings;
 impl Profile {
     pub fn new(user: User, followers: Vec<User> following: Vec<User>, 
     mutuals: Vec<User>, bookmarks: Vec<Post>, displayProfilePosts: Vec<Post>,

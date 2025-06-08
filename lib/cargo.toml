@@ -11,6 +11,12 @@ tokio = {version = "1", features = ["full"]}
 dotenv = "0.15"
 chrono = {version = "0.4", features = ["serde"]}
 
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+flutter_rust_bridge = "1"
+
 [[bin]]
 name = "cooking_app_server"
 path = "backend/cooking_app_server.rs"

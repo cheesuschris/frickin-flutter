@@ -9,8 +9,8 @@ struct User {
     pub posts: Vec<Post>,
     pub bio: String,
     pub about: String,
-    pub privateProfileEnabled: bool
-    pub useerCreated: DateTime<Utc>
+    pub privateProfileEnabled: bool,
+    pub userCreated: DateTime<Utc>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -64,5 +64,4 @@ struct Post {
     timeStamp: DateTime<Utc>,
     caption: String,
     score: f32
-
 }

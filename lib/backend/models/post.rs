@@ -1,5 +1,8 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
+use flutter_rust_bridge::frb;
+mod models;
+pub use models::*;
 
 impl Post {
     pub fn new(recipe:String, initRecipeImage: String, ratingcount: i32, avgDiffRating: f32, avgTasteRating: f32, avgCostRating: f32, allImageFollowUpsToCompare: String, timeStamp: DateTime<Utc>, caption: Striing) -> Post{
