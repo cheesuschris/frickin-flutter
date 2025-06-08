@@ -2,22 +2,42 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 impl Post {
-    pub fn new(recipe:String, initRecipeImage: String, allImageFollowUpsToCompare: String, timeStamp: DateTime<Utc>, caption: Striing) -> Post{
+    pub fn new(recipe:String, initRecipeImage: String, ratingcount: i32, avgDiffRating: f32, avgTasteRating: f32, avgCostRating: f32, allImageFollowUpsToCompare: String, timeStamp: DateTime<Utc>, caption: Striing) -> Post{
         Post{
             recipe,
             initRecipeImage,
+            ratingcount: 1,
+            avgDiffRating: f32,
+            avgTasteRating: f32,
+            avgCostRating: f32,
             allImageFollowUpsToCompare,
             timeStamp: Utc::now(),
-            caption
+            caption,
+            score: 0.0001
         }
     }
-    fn setCap(&mut self, cap: String) {
+    pub fn setCap(&mut self, cap: String) {
         self.caption = cap;
     }
-    fn setRec(&mut self, rec:String) {
+    pub fn setRec(&mut self, rec:String) {
         self.recipe = rec;
     }
-    fn resetTime(&mut self, time:Utc::now()) {
-        self.timeStamp = 
-    } 
+    pub fn resetTime(&mut self) {
+        self.timeStamp = Utc::now();
+    }
+    pub fn setImg(@mut self, url: String) {
+        self.initRecipeImage = url;
+    }
+    fn incRatingCount(&mut self) {
+        self.ratingcount+=1;
+    }
+    fn avgChange(&mut self, diff:f32, taste: f32, cost: f32) {
+        self.avgDiffRating = (self.avgDiffRating*ratingcount+diff)/(ratingcount+1);
+        self.avgCostRating = (self.avgCostRating*ratingcount+cost)/(ratingcount+1);
+        self.avgTasteRating = (self.avgTasteRating*ratingcount+taste)/(ratingcount+1);
+        self.incRatingCount();
+    }
+    fn scoreCalc() {
+        
+    }
 }
