@@ -56,7 +56,13 @@ struct Auth {
 struct Post {
     recipe: String,
     initRecipeImage: String,
+    ratingcount, i32,
+    avgDiffRating f32,
+    avgTasteRating f32,
+    avgCostRating f32, 
     allImageFollowUpsToCompare: Vec<String>,
     timeStamp: DateTime<Utc>,
-    caption: String
+    caption: String,
+    score: f32
+
 }
