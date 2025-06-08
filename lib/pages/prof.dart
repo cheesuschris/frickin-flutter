@@ -64,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      currentIndex: 3,
+      currentIndex: 4,
       actions: [_buildLogoutButton()],
     );
   }

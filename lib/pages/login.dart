@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final response = await auth.signIn(email, password);
       if (!mounted) return;
-      
+
       if (response.user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed - please try again")),
@@ -46,17 +46,17 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      
+
       String message = "An error occurred";
       if (e.toString().contains('Invalid login credentials')) {
         message = "Incorrect email or password";
       } else if (e.toString().contains('Email not confirmed')) {
         message = "Please verify your email first";
       }
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

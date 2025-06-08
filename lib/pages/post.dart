@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class PostPage extends StatefulWidget {
@@ -40,17 +39,19 @@ class _PostPageState extends State<PostPage> {
       final post = {
         'recipe': _recipeController.text,
         'initRecipeImage': _initImageController.text,
-        'allImageFollowUpsToCompare':
-            _followUpControllers.map((c) => c.text).where((s) => s.isNotEmpty).toList(),
+        'allImageFollowUpsToCompare': _followUpControllers
+            .map((c) => c.text)
+            .where((s) => s.isNotEmpty)
+            .toList(),
         'timeStamp': formattedTime,
         'caption': _captionController.text,
       };
 
       // add backend here
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Post submitted!")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Post submitted!")));
 
       // clear form
       _recipeController.clear();
@@ -88,13 +89,19 @@ class _PostPageState extends State<PostPage> {
                   TextFormField(
                     controller: _recipeController,
                     decoration: const InputDecoration(labelText: 'Recipe Name'),
-                    validator: (value) => value == null || value.isEmpty ? 'Enter a recipe' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Enter a recipe'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _initImageController,
-                    decoration: const InputDecoration(labelText: 'Main Image URL'),
-                    validator: (value) => value == null || value.isEmpty ? 'Enter an image URL' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Main Image URL',
+                    ),
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Enter an image URL'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   const Text("Other Images"),
@@ -106,7 +113,9 @@ class _PostPageState extends State<PostPage> {
                         Expanded(
                           child: TextFormField(
                             controller: controller,
-                            decoration: InputDecoration(labelText: 'Image URL ${index + 1}'),
+                            decoration: InputDecoration(
+                              labelText: 'Image URL ${index + 1}',
+                            ),
                           ),
                         ),
                         IconButton(
@@ -140,7 +149,7 @@ class _PostPageState extends State<PostPage> {
           ),
         ),
       ),
-      currentIndex: 0,
+      currentIndex: 2,
     );
   }
 }

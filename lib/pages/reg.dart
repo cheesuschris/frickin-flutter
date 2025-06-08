@@ -1,5 +1,4 @@
 import 'package:cooking_app/auth/auth.dart';
-import 'package:cooking_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
 class Reg extends StatefulWidget {
@@ -28,9 +27,9 @@ class _regPageState extends State<Reg> {
     }
 
     if (confirm != password) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Passwords do not match")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
       return;
     }
 
@@ -40,20 +39,24 @@ class _regPageState extends State<Reg> {
       debugPrint('Starting registration...');
       final response = await auth.signUp(email, password);
       debugPrint('Registration response: ${response.user != null}');
-      
+
       if (!mounted) return;
 
       if (response.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Please check your email to verify your account before logging in"),
+            content: Text(
+              "Please check your email to verify your account before logging in",
+            ),
             duration: Duration(seconds: 5),
           ),
         );
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration failed - please try again")),
+          const SnackBar(
+            content: Text("Registration failed - please try again"),
+          ),
         );
       }
     } catch (e) {
@@ -64,10 +67,10 @@ class _regPageState extends State<Reg> {
       if (e.toString().contains('already registered')) {
         message = "This email is already registered";
       }
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -78,9 +81,7 @@ class _regPageState extends State<Reg> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-      ),
+      appBar: AppBar(title: const Text('Register')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

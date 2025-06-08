@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class SearchPage extends StatefulWidget {
@@ -9,6 +8,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchBarC extends State<SearchPage> {
+  @override
   Widget build(BuildContext context) {
     return MainScaffold(
       body: Padding(

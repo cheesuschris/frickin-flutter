@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class LandingPage extends StatefulWidget {
@@ -10,6 +9,7 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  @override
   Widget build(BuildContext context) {
     return MainScaffold(
       body: Center(

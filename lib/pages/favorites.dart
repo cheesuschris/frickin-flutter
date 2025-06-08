@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -10,6 +9,7 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
+  @override
   Widget build(BuildContext context) {
     return MainScaffold(
       body: Center(
@@ -21,7 +21,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ],
         ),
       ),
-      currentIndex: 2,
+      currentIndex: 3,
     );
   }
 }
