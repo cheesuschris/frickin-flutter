@@ -5,20 +5,21 @@ mod models;
 pub use models::*;
 
 impl Profile {
-    pub fn new(user: User, followers: Vec<User> following: Vec<User>, 
+    pub fn new(user: User, followers: Vec<User>, following: Vec<User>, 
     mutuals: Vec<User>, bookmarks: Vec<Post>, displayProfilePosts: Vec<Post>,
     settings: Settings, verifiedEnabled: bool) -> Profile {
         Profile {
             user,
-            followers: mut Vec<User>,
-            following: mut Vec<User>,
-            mutuals: mut Vec<User>,
-            bookmarks: mut Vec<Post>,
-            displayProfilePosts: Vec<Post>
+            followers: Vec<User>::new(),
+            following: Vec<User>::new(),
+            mutuals: Vec<User>::new(),
+            bookmarks: Vec<Post>::new(),
+            displayProfilePosts: Vec<Post>::new(),
+            settings: Settings,
+            verifyEnabled: true,
             followerCount: 0,
             followingCount: 0
         }
-            
     }
     pub fn newfollowing(&mut self, user1: User) {
         self.following.push(user1);
