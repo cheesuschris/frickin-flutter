@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/auth/gate.dart';
-import 'package:cooking_app/src/rust/api/simple.dart';
-import 'package:cooking_app/src/rust/frb_generated.dart';
+// import 'package:cooking_app/src/rust/api/simple.dart';
+// import 'package:cooking_app/src/rust/frb_generated.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +11,7 @@ void main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnZHVtbGtrZnhrbmNjbXZnenhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5Njk2MDEsImV4cCI6MjA2MzU0NTYwMX0.9yT_wv-72Hlea4E0Rlo4p8V_aWObnvxksx1UOTdIQlc',
   );
-  await RustLib.init();
+  await Future.delayed(const Duration(milliseconds: 100));
   runApp(const MyApp());
 }
 
