@@ -1,117 +1,16 @@
-// The original content is temporarily commented out to allow generating a self-contained demo - feel free to uncomment later.
-
-// // The original content is temporarily commented out to allow generating a self-contained demo - feel free to uncomment later.
-// 
-// // import 'package:flutter/material.dart';
-// // import 'package:supabase_flutter/supabase_flutter.dart';
-// // import 'package:cooking_app/auth/gate.dart';
-// // import 'package:cooking_app/src/rust/api/simple.dart';
-// // import 'package:cooking_app/src/rust/frb_generated.dart';
-// // 
-// // void main() async {
-// //   WidgetsFlutterBinding.ensureInitialized();
-// //   await Supabase.initialize(
-// //     url: 'https://egdumlkkfxknccmvgzxo.supabase.co',
-// //     anonKey:
-// //         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnZHVtbGtrZnhrbmNjbXZnenhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5Njk2MDEsImV4cCI6MjA2MzU0NTYwMX0.9yT_wv-72Hlea4E0Rlo4p8V_aWObnvxksx1UOTdIQlc',
-// //   );
-// //   await RustLib.init();
-// //   runApp(const MyApp());
-// // }
-// // 
-// // class MyApp extends StatelessWidget {
-// //   const MyApp({super.key});
-// // 
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return MaterialApp(
-// //       title: 'Chris Cooking',
-// //       theme: ThemeData(
-// //         colorScheme: ColorScheme.fromSeed(
-// //           seedColor: const Color.fromARGB(255, 255, 255, 255),
-// //         ),
-// //       ),
-// //       home: const AuthGate(),
-// //     );
-// //   }
-// // }
-// // 
-// // class MyHomePage extends StatefulWidget {
-// //   const MyHomePage({super.key, required this.title});
-// // 
-// //   final String title;
-// // 
-// //   @override
-// //   State<MyHomePage> createState() => _MyHomePageState();
-// // }
-// // 
-// // class _MyHomePageState extends State<MyHomePage> {
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold();
-// //   }
-// // }
-// // 
-// // // import 'package:flutter/material.dart';
-// // // import 'package:cooking_app/src/rust/api/simple.dart';
-// // // import 'package:cooking_app/src/rust/frb_generated.dart';
-// // 
-// // // Future<void> main() async {
-// // //   await RustLib.init();
-// // //   runApp(const MyApp());
-// // // }
-// // 
-// // // class MyApp extends StatelessWidget {
-// // //   const MyApp({super.key});
-// // 
-// // //   @override
-// // //   Widget build(BuildContext context) {
-// // //     return MaterialApp(
-// // //       home: Scaffold(
-// // //         appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
-// // //         body: Center(
-// // //           child: Text(
-// // //             'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`',
-// // //           ),
-// // //         ),
-// // //       ),
-// // //     );
-// // //   }
-// // // }
-// // 
-// 
-// import 'package:flutter/material.dart';
-// import 'package:cooking_app/src/rust/api/simple.dart';
-// import 'package:cooking_app/src/rust/frb_generated.dart';
-// 
-// Future<void> main() async {
-//   await RustLib.init();
-//   runApp(const MyApp());
-// }
-// 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-// 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
-//         body: Center(
-//           child: Text(
-//               'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
-//         ),
-//       ),
-//     );
-//   }
-// }
-// 
-
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:cooking_app/auth/gate.dart';
 import 'package:cooking_app/src/rust/api/simple.dart';
 import 'package:cooking_app/src/rust/frb_generated.dart';
 
-Future<void> main() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://egdumlkkfxknccmvgzxo.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnZHVtbGtrZnhrbmNjbXZnenhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5Njk2MDEsImV4cCI6MjA2MzU0NTYwMX0.9yT_wv-72Hlea4E0Rlo4p8V_aWObnvxksx1UOTdIQlc',
+  );
   await RustLib.init();
   runApp(const MyApp());
 }
@@ -122,13 +21,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
-        body: Center(
-          child: Text(
-              'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
+      title: 'Chris Cooking',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 255, 255, 255),
         ),
       ),
+      home: const AuthGate(),
     );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
   }
 }
