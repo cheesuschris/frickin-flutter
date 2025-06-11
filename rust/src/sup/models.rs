@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct User {
+pub struct User {
     pub userId: String,
     pub username: String,
     pub profilePicture: String,
@@ -15,28 +15,28 @@ struct User {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Profile {
+pub struct Profile {
     pub user: User,
     pub followers: Vec<User>,
     pub following: Vec<User>,
     pub mutuals: Vec<User>,
     pub bookmarks: Vec<Post>,
     pub displayProfilePosts: Vec<Post>,
-    pub settings: Setings,
+    pub settings: Settings,
     pub verifiedEnabled: bool,
     pub followerCount: i32,
     pub followingCount: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Settings {
+pub struct Settings {
     pub multiFactorAuthEnabled: bool,
     pub privateProfileEnabled: bool,
     pub notificationsEnabled: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Notifications {
+pub struct Notifications {
     pub notificationId: String,
     pub to_user_id: String,
     pub from_user_id: String,
@@ -46,7 +46,7 @@ struct Notifications {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Auth {
+pub struct Auth {
     pub userID: String,
     pub hashedPassword: String,
     pub mfaSecret: Option<String>,
@@ -54,7 +54,7 @@ struct Auth {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Post {
+pub struct Post {
     recipe: String,
     initRecipeImage: String,
     ratingcount: i32,

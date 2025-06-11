@@ -1,12 +1,9 @@
+use crate::models::Post;
+use crate::models::User;
 use chrono::{DateTime, Utc};
-use flutter_rust_bridge::frb;
-use serde::{Deserialize, Serialize};
-mod models;
-pub use models::*;
-
 impl User {
     pub fn new(
-        userID: String,
+        userId: String,
         username: String,
         profilePicture: String,
         posts: Vec<Post>,

@@ -1,8 +1,7 @@
+use crate::models::Post;
 use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
 use serde::{Deserialize, Serialize};
-mod models;
-pub use models::*;
 
 impl Post {
     pub fn new(
@@ -12,18 +11,19 @@ impl Post {
         avgDiffRating: f32,
         avgTasteRating: f32,
         avgCostRating: f32,
-        allImageFollowUpsToCompare: String,
+        allImageFollowUpsToCompare: Vec<String>,
         timeStamp: DateTime<Utc>,
-        caption: Striing,
+        caption: String,
+        score: f32,
     ) -> Post {
         Post {
             recipe,
             initRecipeImage,
             ratingcount: 1,
-            avgDiffRating: f32,
-            avgTasteRating: f32,
-            avgCostRating: f32,
-            allImageFollowUpsToCompare,
+            avgDiffRating,
+            avgTasteRating,
+            avgCostRating,
+            allImageFollowUpsToCompare: Vec::<String>,
             timeStamp: Utc::now(),
             caption,
             score: 0.0001,
