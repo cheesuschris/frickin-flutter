@@ -1,4 +1,4 @@
-use crate::models::Post;
+use crate::sup::Post;
 use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
 use serde::{Deserialize, Serialize};
@@ -7,26 +7,20 @@ impl Post {
     pub fn new(
         recipe: String,
         initRecipeImage: String,
-        ratingcount: i32,
-        avgDiffRating: f32,
-        avgTasteRating: f32,
-        avgCostRating: f32,
         allImageFollowUpsToCompare: Vec<String>,
-        timeStamp: DateTime<Utc>,
         caption: String,
-        score: f32,
     ) -> Post {
         Post {
-            recipe,
-            initRecipeImage,
-            ratingcount: 1,
-            avgDiffRating,
-            avgTasteRating,
-            avgCostRating,
-            allImageFollowUpsToCompare: Vec::<String>,
+            recipe: recipe,
+            initRecipeImage: initRecipeImage,
+            ratingcount: 0,
+            avgDiffRating: 0.0,
+            avgTasteRating: 0.0,
+            avgCostRating: 0.0,
+            allImageFollowUpsToCompare,
             timeStamp: Utc::now(),
-            caption,
-            score: 0.0001,
+            caption: caption,
+            score: 0.0,
         }
     }
     pub fn setCap(&mut self, cap: String) {
@@ -45,9 +39,12 @@ impl Post {
         self.ratingcount += 1;
     }
     fn avgChange(&mut self, diff: f32, taste: f32, cost: f32) {
-        self.avgDiffRating = (self.avgDiffRating * ratingcount + diff) / (ratingcount + 1);
-        self.avgCostRating = (self.avgCostRating * ratingcount + cost) / (ratingcount + 1);
-        self.avgTasteRating = (self.avgTasteRating * ratingcount + taste) / (ratingcount + 1);
+        self.avgDiffRating =
+            (self.avgDiffRating * self.ratingcount as f32 + diff) / (self.ratingcount as f32 + 1.0);
+        self.avgCostRating = (self.avgCostRating * (self.ratingcount as f32) + cost)
+            / ((self.ratingcount as f32) + 1.0);
+        self.avgTasteRating = (self.avgTasteRating * (self.ratingcount as f32) + taste)
+            / ((self.ratingcount as f32) + 1.0);
         self.incRatingCount();
     }
     fn scoreCalc() {}

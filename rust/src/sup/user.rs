@@ -1,5 +1,4 @@
-use crate::models::Post;
-use crate::models::User;
+use crate::sup::*;
 use chrono::{DateTime, Utc};
 impl User {
     pub fn new(
@@ -20,12 +19,12 @@ impl User {
             userId,
             username,
             profilePicture,
-            posts: Vec::new(),
-            score: 0.0,
+            posts,
+            score,
             bio,
             about,
-            privateProfileEnabled: false,
-            userCreated: Utc::now(),
+            privateProfileEnabled,
+            userCreated,
         }
     }
 }

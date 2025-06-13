@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct User {
     pub userId: String,
     pub username: String,
@@ -14,7 +14,7 @@ pub struct User {
     pub userCreated: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Profile {
     pub user: User,
     pub followers: Vec<User>,
@@ -28,14 +28,14 @@ pub struct Profile {
     pub followingCount: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
     pub multiFactorAuthEnabled: bool,
     pub privateProfileEnabled: bool,
     pub notificationsEnabled: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Notifications {
     pub notificationId: String,
     pub to_user_id: String,
@@ -45,7 +45,7 @@ pub struct Notifications {
     pub createdAtTimeStamp: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Auth {
     pub userID: String,
     pub hashedPassword: String,
@@ -53,16 +53,16 @@ pub struct Auth {
     pub mfaVerified: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Post {
-    recipe: String,
-    initRecipeImage: String,
-    ratingcount: i32,
-    avgDiffRating: f32,
-    avgTasteRating: f32,
-    avgCostRating: f32,
-    allImageFollowUpsToCompare: Vec<String>,
-    timeStamp: DateTime<Utc>,
-    caption: String,
-    score: f32,
+    pub recipe: String,
+    pub initRecipeImage: String,
+    pub ratingcount: i32,
+    pub avgDiffRating: f32,
+    pub avgTasteRating: f32,
+    pub avgCostRating: f32,
+    pub allImageFollowUpsToCompare: Vec<String>,
+    pub timeStamp: DateTime<Utc>,
+    pub caption: String,
+    pub score: f32,
 }

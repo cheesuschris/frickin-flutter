@@ -1,24 +1,33 @@
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
-mod models;
-pub use models::*;
+use serde::{Deserialize, Serialize};
+
+use crate::sup::*;
 
 impl Profile {
-    pub fn new(user: User, followers: Vec<User>, following: Vec<User>, 
-    mutuals: Vec<User>, bookmarks: Vec<Post>, displayProfilePosts: Vec<Post>,
-    settings: Settings, verifiedEnabled: bool) -> Profile {
+    pub fn new(
+        user: User,
+        followers: Vec<User>,
+        following: Vec<User>,
+        mutuals: Vec<User>,
+        bookmarks: Vec<Post>,
+        displayProfilePosts: Vec<Post>,
+        settings: Settings,
+        followerCount: i32,
+        followingCount: i32,
+        verifiedEnabled: bool,
+    ) -> Profile {
         Profile {
             user,
-            followers: Vec<User>::new(),
-            following: Vec<User>::new(),
-            mutuals: Vec<User>::new(),
-            bookmarks: Vec<Post>::new(),
-            displayProfilePosts: Vec<Post>::new(),
-            settings: Settings,
-            verifyEnabled: true,
-            followerCount: 0,
-            followingCount: 0
+            followers,
+            following,
+            mutuals,
+            bookmarks,
+            displayProfilePosts,
+            settings,
+            verifiedEnabled,
+            followerCount,
+            followingCount,
         }
     }
     pub fn newfollowing(&mut self, user1: User) {
@@ -29,11 +38,11 @@ impl Profile {
         self.followers.push(user1);
         self.incFollower();
     }
-    
+
     fn incFollower(&mut self) {
         self.followerCount += 1;
     }
     fn incFollowing(&mut self) {
-        self.followingCount +=1;
+        self.followingCount += 1;
     }
 }
