@@ -3,9 +3,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/auth/gate.dart';
 import 'package:cooking_app/src/rust/api/simple.dart';
 import 'package:cooking_app/src/rust/frb_generated.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "backend/credentials/.env");
   await Supabase.initialize(
     url: 'https://egdumlkkfxknccmvgzxo.supabase.co',
     anonKey:
