@@ -1,4 +1,4 @@
-use crate::sup::Post;
+use crate::sup::*;
 use chrono::{DateTime, Utc};
 use flutter_rust_bridge::frb;
 use serde::{Deserialize, Serialize};

@@ -36,7 +36,7 @@ pub struct Settings {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Notifications {
+pub struct Notification {
     pub notificationId: String,
     pub to_user_id: String,
     pub from_user_id: String,
