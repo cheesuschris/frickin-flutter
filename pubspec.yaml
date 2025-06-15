@@ -42,6 +42,7 @@ dependencies:
   rust_lib_cooking_app:
     path: rust_builder
   flutter_rust_bridge: 2.10.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
