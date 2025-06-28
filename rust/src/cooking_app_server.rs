@@ -6,7 +6,7 @@ use anyhow::Result;
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
-    dotenv().ok();
+    dotenv::from_filename(../../assets/backend/credentials/.env).ok();
     // this loads the .env file in the credentials folder
     let uri = env::var("MONGO_CONNECTION_STRING").expect("so credentials was modified. who touched it.");
     //uri is now set
