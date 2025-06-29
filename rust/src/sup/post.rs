@@ -1,7 +1,7 @@
 use crate::sup::*;
-use chrono::{DateTime, Utc};
-use flutter_rust_bridge::frb;
-use serde::{Deserialize, Serialize};
+use chrono::Utc;
+// use flutter_rust_bridge::frb;
+// use serde::{Deserialize, Serialize};
 
 impl Post {
     pub fn new(
@@ -35,17 +35,17 @@ impl Post {
     pub fn set_img(&mut self, url: String) {
         self.init_recipe_image = url;
     }
-    fn incRatingCount(&mut self) {
+    fn inc_rating_count(&mut self) {
         self.rating_count += 1;
     }
-    fn avgChange(&mut self, diff: f32, taste: f32, cost: f32) {
+    fn avg_change(&mut self, diff: f32, taste: f32, cost: f32) {
         self.avg_diff_rating = (self.avg_diff_rating * self.rating_count as f32 + diff)
             / (self.rating_count as f32 + 1.0);
         self.avg_cost_rating = (self.avg_cost_rating * (self.rating_count as f32) + cost)
             / ((self.rating_count as f32) + 1.0);
         self.avg_taste_rating = (self.avg_taste_rating * (self.rating_count as f32) + taste)
             / ((self.rating_count as f32) + 1.0);
-        self.incRatingCount();
+        self.inc_rating_count();
     }
-    fn scoreCalc() {}
+    fn score_calc() {}
 }

@@ -1,5 +1,5 @@
 use crate::sup::*;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 impl User {
     pub fn new(
         user_id: String,

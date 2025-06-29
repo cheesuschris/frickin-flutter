@@ -1,7 +1,7 @@
 pub use crate::sup::*;
-use chrono::{DateTime, Utc};
-use flutter_rust_bridge::frb;
-use serde::{Deserialize, Serialize};
+// use chrono::{DateTime, Utc};
+// use flutter_rust_bridge::frb;
+// use serde::{Deserialize, Serialize};
 
 impl Settings {
     pub fn new() -> Settings {
@@ -14,10 +14,10 @@ impl Settings {
     pub fn change_multi_auth(&mut self) {
         self.multifactor_auth_enabled = !self.multifactor_auth_enabled;
     }
-    pub fn changePrivPub(&mut self) {
+    pub fn change_priv_pub(&mut self) {
         self.private_profile_enabled = !self.private_profile_enabled;
     }
-    pub fn changeNotifs(&mut self) {
+    pub fn change_notifs(&mut self) {
         self.notifications_enabled = !self.notifications_enabled;
     }
 }
