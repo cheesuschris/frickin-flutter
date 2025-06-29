@@ -11,11 +11,11 @@ impl Profile {
         following: Vec<User>,
         mutuals: Vec<User>,
         bookmarks: Vec<Post>,
-        displayProfilePosts: Vec<Post>,
+        display_profile_posts: Vec<Post>,
         settings: Settings,
-        followerCount: i32,
-        followingCount: i32,
-        verifiedEnabled: bool,
+        follower_count: i32,
+        following_count: i32,
+        verified_enabled: bool,
     ) -> Profile {
         Profile {
             user,
@@ -23,26 +23,26 @@ impl Profile {
             following,
             mutuals,
             bookmarks,
-            displayProfilePosts,
+            display_profile_posts,
             settings,
-            verifiedEnabled,
-            followerCount,
-            followingCount,
+            verified_enabled,
+            follower_count,
+            following_count,
         }
     }
-    pub fn newfollowing(&mut self, user1: User) {
+    pub fn new_following(&mut self, user1: User) {
         self.following.push(user1);
-        self.incFollowing();
+        self.inc_following();
     }
-    pub fn newfollower(&mut self, user1: User) {
+    pub fn new_follower(&mut self, user1: User) {
         self.followers.push(user1);
-        self.incFollower();
+        self.inc_follower();
     }
 
-    fn incFollower(&mut self) {
-        self.followerCount += 1;
+    fn inc_follower(&mut self) {
+        self.follower_count += 1;
     }
-    fn incFollowing(&mut self) {
-        self.followingCount += 1;
+    fn inc_following(&mut self) {
+        self.following_count += 1;
     }
 }

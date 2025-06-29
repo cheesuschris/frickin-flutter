@@ -3,15 +3,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct User {
-    pub userId: String,
+    pub user_id: String,
     pub username: String,
-    pub profilePicture: String,
+    pub profile_picture: String,
     pub posts: Vec<Post>,
     pub score: f32,
     pub bio: String,
     pub about: String,
-    pub privateProfileEnabled: bool,
-    pub userCreated: DateTime<Utc>,
+    pub private_profile_enabled: bool,
+    pub user_created: DateTime<Utc>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -21,48 +21,48 @@ pub struct Profile {
     pub following: Vec<User>,
     pub mutuals: Vec<User>,
     pub bookmarks: Vec<Post>,
-    pub displayProfilePosts: Vec<Post>,
+    pub display_profile_posts: Vec<Post>,
     pub settings: Settings,
-    pub verifiedEnabled: bool,
-    pub followerCount: i32,
-    pub followingCount: i32,
+    pub verified_enabled: bool,
+    pub follower_count: i32,
+    pub following_count: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
-    pub multiFactorAuthEnabled: bool,
-    pub privateProfileEnabled: bool,
-    pub notificationsEnabled: bool,
+    pub multifactor_auth_enabled: bool,
+    pub private_profile_enabled: bool,
+    pub notifications_enabled: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Notification {
-    pub notificationId: String,
+    pub notification_id: String,
     pub to_user_id: String,
     pub from_user_id: String,
     pub message: String,
     pub read: bool,
-    pub createdAtTimeStamp: DateTime<Utc>,
+    pub created_at_time_stamp: DateTime<Utc>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Auth {
-    pub userID: String,
-    pub hashedPassword: String,
-    pub mfaSecret: Option<String>,
-    pub mfaVerified: bool,
+    pub user_id: String,
+    pub hashed_password: String,
+    pub mfa_secret: Option<String>,
+    pub mfa_verified: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Post {
     pub recipe: String,
-    pub initRecipeImage: String,
-    pub ratingcount: i32,
-    pub avgDiffRating: f32,
-    pub avgTasteRating: f32,
-    pub avgCostRating: f32,
-    pub allImageFollowUpsToCompare: Vec<String>,
-    pub timeStamp: DateTime<Utc>,
+    pub init_recipe_image: String,
+    pub rating_count: i32,
+    pub avg_diff_rating: f32,
+    pub avg_taste_rating: f32,
+    pub avg_cost_rating: f32,
+    pub all_image_follow_ups_to_compare: Vec<String>,
+    pub time_stamp: DateTime<Utc>,
     pub caption: String,
     pub score: f32,
 }
