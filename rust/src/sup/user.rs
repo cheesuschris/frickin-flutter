@@ -2,23 +2,23 @@ use crate::sup::*;
 use chrono::{DateTime, Utc};
 impl User {
     pub fn new(
-        userId: String,
+        user_id: String,
         username: String,
-        profilePicture: String,
+        profile_picture: String,
         posts: Vec<Post>,
         bio: String,
         about: String,
     ) -> User {
         User {
-            userId: userId,
+            user_id: user_id,
             username: username,
-            profilePicture: profilePicture,
+            profile_picture: profile_picture,
             posts: posts,
             score: 0.0,
             bio: bio,
             about: about,
-            privateProfileEnabled: false,
-            userCreated: Utc::now(),
+            private_profile_enabled: false,
+            user_created: Utc::now(),
         }
     }
 }
