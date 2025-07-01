@@ -21,4 +21,7 @@ impl User {
             user_created: Utc::now(),
         }
     }
+    pub fn add_post(&mut self, post: Post) {
+        self.posts.push(post);
+    }
 }

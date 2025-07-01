@@ -47,5 +47,7 @@ impl Post {
             / ((self.rating_count as f32) + 1.0);
         self.inc_rating_count();
     }
-    fn score_calc() {}
+    fn score_calc() {
+        // needs impl
+    }
 }

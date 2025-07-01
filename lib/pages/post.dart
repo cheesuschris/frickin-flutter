@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
+import 'package:cooking_app/auth/auth.dart';
+import 'package:cooking_app/src/rust/api/simple.dart';
+import 'package:cooking_app/src/rust/frb_generated.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -14,6 +17,7 @@ class _PostPageState extends State<PostPage> {
   final _recipeController = TextEditingController();
   final _initImageController = TextEditingController();
   final _captionController = TextEditingController();
+  final userID = Auth().userID;
 
   final List<TextEditingController> _followUpControllers = [
     TextEditingController(),
@@ -46,7 +50,16 @@ class _PostPageState extends State<PostPage> {
         'timeStamp': formattedTime,
         'caption': _captionController.text,
       };
-
+      if (userID != null) {
+        final post = rust.new_post(
+          userID,
+          _recipeController.text,
+          _captionController.text,
+          _initImageController.text,
+        );
+      } else {
+        print("Not logged in");
+      }
       // add backend here
 
       ScaffoldMessenger.of(
