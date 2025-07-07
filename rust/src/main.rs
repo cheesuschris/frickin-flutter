@@ -1,11 +1,15 @@
-use mongodb::{Client, options::ClientOptions};
+use crate::modes::*;
+use anyhow::Result;
+use dotenv::dotenv;
+use mongodb::{bson::doc, options::ClientOptions, Client, Collection, Database};
 use std::env;
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
-    dotenv::from_filename("../assets/backend/credentials/.env").ok();
+    dotenv::from_filename("../../assets/backend/credentials/.env").ok();
     // this loads the .env file in the credentials folder
-    let uri = env::var("MONGO_CONNECTION_STRING").expect("so credentials was modified. who touched it.");
+    let uri =
+        env::var("MONGO_CONNECTION_STRING").expect("so credentials was modified. who touched it.");
     //uri is now set
     let mut client_options = ClientOptions::parse(&uri).await?;
     //mongo_client_options created
