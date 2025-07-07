@@ -1,14 +1,14 @@
 use crate::sup::*;
-use chrono::{DateTime, Utc};
-use flutter_rust_bridge::frb;
-use serde::{Deserialize, Serialize};
+use chrono::Utc;
+// use flutter_rust_bridge::frb;
+// use serde::{Deserialize, Serialize};
 
 impl Post {
     pub fn new(
         recipe: String,
-        init_recipe_image: String,
-        all_image_follow_ups_to_compare: Vec<String>,
-        caption: String
+        initRecipeImage: String,
+        allImageFollowUpsToCompare: Vec<String>,
+        caption: String,
     ) -> Post {
         Post {
             recipe: recipe,
@@ -38,14 +38,14 @@ impl Post {
     fn inc_rating_count(&mut self) {
         self.rating_count += 1;
     }
-    fn avg_change(&mut self, diff: f32, taste: f32, cost: f32) {
-        self.avg_diff_rating =
-            (self.avg_diff_rating * self.rating_count as f32 + diff) / (self.rating_count as f32 + 1.0);
-        self.avg_cost_rating = (self.avg_cost_rating * (self.rating_count as f32) + cost)
-            / ((self.rating_count as f32) + 1.0);
-        self.avg_taste_rating = (self.avg_taste_rating * (self.rating_count as f32) + taste)
-            / ((self.rating_count as f32) + 1.0);
-        self.inc_rating_count();
+    fn avgChange(&mut self, diff: f32, taste: f32, cost: f32) {
+        self.avgDiffRating =
+            (self.avgDiffRating * self.ratingcount as f32 + diff) / (self.ratingcount as f32 + 1.0);
+        self.avgCostRating = (self.avgCostRating * (self.ratingcount as f32) + cost)
+            / ((self.ratingcount as f32) + 1.0);
+        self.avgTasteRating = (self.avgTasteRating * (self.ratingcount as f32) + taste)
+            / ((self.ratingcount as f32) + 1.0);
+        self.incRatingCount();
     }
-    fn score_calc() {}
+    fn scoreCalc() {}
 }

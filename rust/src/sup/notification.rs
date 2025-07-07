@@ -1,5 +1,5 @@
 use crate::sup::*;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 
 impl Notification {
     pub fn new(
@@ -14,7 +14,7 @@ impl Notification {
             from_user_id: from_user_id,
             message: message,
             read: false,
-            create_at_time_stamp: Utc::now(),
+            createdAtTimeStamp: Utc::now(),
         }
     }
     pub fn opened(&mut self) {

@@ -30,9 +30,9 @@ pub struct Profile {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
-    pub multi_factor_auth_enabled: bool,
-    pub private_profile_enabled: bool,
-    pub notifications_enabled: bool,
+    pub multiFactorAuthEnabled: bool,
+    pub privateProfileEnabled: bool,
+    pub notificationsEnabled: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -42,7 +42,7 @@ pub struct Notification {
     pub from_user_id: String,
     pub message: String,
     pub read: bool,
-    pub create_at_time_stamp: DateTime<Utc>,
+    pub createdAtTimeStamp: DateTime<Utc>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

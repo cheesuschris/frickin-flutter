@@ -1,6 +1,6 @@
-use chrono::{DateTime, Utc};
-use flutter_rust_bridge::frb;
-use serde::{Deserialize, Serialize};
+// use chrono::{DateTime, Utc};
+// use flutter_rust_bridge::frb;
+// use serde::{Deserialize, Serialize};
 
 use crate::sup::*;
 
@@ -11,7 +11,7 @@ impl Profile {
         following: Vec<User>,
         mutuals: Vec<User>,
         bookmarks: Vec<Post>,
-        display_profile_posts: Vec<Post>,
+        displayProfilePosts: Vec<Post>,
         settings: Settings,
         follower_count: i32,
         following_count: i32,
@@ -23,7 +23,7 @@ impl Profile {
             following,
             mutuals,
             bookmarks,
-            display_profile_posts,
+            displayProfilePosts,
             settings,
             verified_enabled,
             follower_count,
