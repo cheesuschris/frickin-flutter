@@ -1,5 +1,5 @@
 use crate::sup::*;
-user flutter::flutter_rust_bridge::frb;
+use flutter::flutter_rust_bridge::frb;
 #[flutter_rust_bridge::frb]
 pub fn new_post(uid: String, recipe: String, cap: String, image: String) {
     post = Post::new(recipe, image, Vec<String>::new(), cap);
