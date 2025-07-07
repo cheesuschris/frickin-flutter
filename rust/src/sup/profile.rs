@@ -7,11 +7,6 @@ use crate::sup::*;
 impl Profile {
     pub fn new(
         user: User,
-        followers: Vec<User>,
-        following: Vec<User>,
-        mutuals: Vec<User>,
-        bookmarks: Vec<Post>,
-        display_profile_posts: Vec<Post>,
         settings: Settings,
         follower_count: i32,
         following_count: i32,
@@ -19,11 +14,11 @@ impl Profile {
     ) -> Profile {
         Profile {
             user,
-            followers,
-            following,
-            mutuals,
-            bookmarks,
-            display_profile_posts,
+            followers: Vec::new(),
+            following: Vec::new(),
+            mutuals: Vec::new(),
+            bookmarks: Vec::new(),
+            display_profile_posts: Vec::new(),
             settings,
             verified_enabled,
             follower_count,

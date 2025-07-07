@@ -329,8 +329,10 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
       final json = jsonDecode(response.body);
       final List photos = json['photos'];
       final randomPhoto = photos[Random().nextInt(photos.length)];
+      print(response.statusCode);
       return randomPhoto['src']['original'];
     } else {
+      print(response.statusCode);
       throw Exception('Looks like pexel is ass too');
     }
   }

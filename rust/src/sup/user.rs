@@ -5,7 +5,6 @@ impl User {
         user_id: String,
         username: String,
         profile_picture: String,
-        posts: Vec<Post>,
         bio: String,
         about: String,
     ) -> User {
@@ -13,7 +12,7 @@ impl User {
             user_id: user_id,
             username: username,
             profile_picture: profile_picture,
-            posts: posts,
+            posts: Vec::new(),
             score: 0.0,
             bio: bio,
             about: about,
