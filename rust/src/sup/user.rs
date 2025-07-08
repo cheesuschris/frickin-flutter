@@ -1,5 +1,6 @@
 use crate::sup::*;
 use chrono::Utc;
+use mongodb::{Client, Collection, bson::doc};
 impl User {
     pub fn new(
         user_id: String,
@@ -12,7 +13,7 @@ impl User {
             user_id: user_id,
             username: username,
             profile_picture: profile_picture,
-            posts: Vec::new(),
+            posts: Vec::<Post>::new(),
             score: 0.0,
             bio: bio,
             about: about,
@@ -20,7 +21,9 @@ impl User {
             user_created: Utc::now(),
         }
     }
-    pub fn add_post(&mut self, post: Post) {
-        self.posts.push(post);
+    pub async fn add_post(&self, collection: &Collection<User>, post: Post) -> mongodb::error::Result<()> {
+        collection.update_one(doc! {"user_id": &self.user_id}, doc!{"$push": {"posts": post}},).await?;
+        Ok(())
     }
+    
 }

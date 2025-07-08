@@ -1,4 +1,4 @@
-use crate::modes::*;
+use crate::sup::*;
 use anyhow::Result;
 use dotenv::dotenv;
 use mongodb::{bson::doc, options::ClientOptions, Client, Collection, Database};
@@ -17,7 +17,7 @@ async fn main() -> mongodb::error::Result<()> {
     //app name created
     let client = Client::with_options(client_options)?;
     //mongo_client created
-    let db = client.database("cooking_database");
+    let _db = client.database("cooking_database");
     //db accessed
 
     //DB Collections are as follows:
