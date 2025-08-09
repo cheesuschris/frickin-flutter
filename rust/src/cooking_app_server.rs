@@ -1,7 +1,5 @@
-use crate::sup::*;
-use anyhow::Result;
-use dotenv::dotenv;
-use mongodb::{bson::doc, options::ClientOptions, Client, Collection, Database};
+// use crate::sup::*;
+use mongodb::{options::ClientOptions, Client};
 use std::env;
 
 #[tokio::main]

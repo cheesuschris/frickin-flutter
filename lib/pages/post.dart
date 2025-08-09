@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 import 'package:cooking_app/auth/auth.dart';
 
@@ -35,21 +34,9 @@ class _PostPageState extends State<PostPage> {
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      final now = DateTime.now().toUtc();
-      final formattedTime = DateFormat("yyyy-MM-ddTHH:mm:ss'Z'").format(now);
-
-      final post = {
-        'recipe': _recipeController.text,
-        'initRecipeImage': _initImageController.text,
-        'allImageFollowUpsToCompare': _followUpControllers
-            .map((c) => c.text)
-            .where((s) => s.isNotEmpty)
-            .toList(),
-        'timeStamp': formattedTime,
-        'caption': _captionController.text,
-      };
+      // TODO: send post payload to backend when implemented
       if (userID == null) {
-        print("Not logged in");
+        debugPrint("Not logged in");
       }
       // add backend here
 
