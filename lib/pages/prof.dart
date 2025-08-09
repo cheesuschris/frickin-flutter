@@ -10,23 +10,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isLoading = false;
+  bool _isLoading = false; // Not final: toggled when navigating to settings
   User? get _currentUser => Supabase.instance.client.auth.currentUser;
 
-  Future<void> _signOut() async {
-    setState(() => _isLoading = true);
-    try {
-      await Supabase.instance.client.auth.signOut();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error signing out: $e')));
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
+  // _signOut removed (unused)
 
   Widget _buildLogoutButton() {
     return IconButton(

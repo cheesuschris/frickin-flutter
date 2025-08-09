@@ -1,4 +1,4 @@
-use crate::db::*;
+// db module is not yet implemented; keep API minimal for now
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
 pub fn greet(name: String) -> String {
@@ -10,4 +10,3 @@ pub fn init_app() {
     // Default utilities - feel free to customize
     flutter_rust_bridge::setup_default_user_utils();
 }
-
