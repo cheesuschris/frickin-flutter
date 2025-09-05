@@ -15,8 +15,8 @@ class _ResetState extends State<Reset> {
   final _confirm = TextEditingController();
   void reset() async {
     final email = _email.text.trim();
-    final newPass = _newPass.text;
-    final confirm = _confirm.text;
+    // In current flow, new password and confirmation are captured but not used.
+    // Validation and backend update to be implemented later.
     try {
       await auth.resetPassword(email);
       if (mounted) {

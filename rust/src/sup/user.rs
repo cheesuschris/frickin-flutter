@@ -1,27 +1,38 @@
 use crate::sup::*;
 use chrono::Utc;
+use mongodb::{bson::doc, bson::to_bson, Collection};
 impl User {
     pub fn new(
         user_id: String,
         username: String,
-        profilePicture: String,
-        posts: Vec<Post>,
+        profile_picture: String,
         bio: String,
         about: String,
     ) -> User {
         User {
-            user_id: user_id,
-            username: username,
-            profilePicture: profilePicture,
-            posts: posts,
+            user_id,
+            username,
+            profile_picture,
+            posts: Vec::<Post>::new(),
             score: 0.0,
-            bio: bio,
-            about: about,
+            bio,
+            about,
             private_profile_enabled: false,
             user_created: Utc::now(),
         }
     }
-    pub fn add_post(&mut self, post: Post) {
-        self.posts.push(post);
+    pub async fn add_post(
+        &self,
+        collection: &Collection<User>,
+        post: Post,
+    ) -> mongodb::error::Result<()> {
+        let post_bson = to_bson(&post)?;
+        collection
+            .update_one(
+                doc! {"user_id": &self.user_id},
+                doc! {"$push": {"posts": post_bson}},
+            )
+            .await?;
+        Ok(())
     }
 }

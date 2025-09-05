@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class Reg extends StatefulWidget {
   const Reg({super.key});
   @override
-  State<Reg> createState() => _regPageState();
+  State<Reg> createState() => RegPageState();
 }
 
-class _regPageState extends State<Reg> {
+class RegPageState extends State<Reg> {
   final auth = Auth();
   final _email = TextEditingController();
   final _password = TextEditingController();

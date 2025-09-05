@@ -25,7 +25,7 @@ class ScrollableFrostedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print('Screen Width: ${size.width}, Screen Height: ${size.height}');
+    debugPrint('Screen Width: ${size.width}, Screen Height: ${size.height}');
 
     return Center(
       child: Stack(
@@ -39,7 +39,7 @@ class ScrollableFrostedCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.yellow.withOpacity(0.3),
+                  color: Colors.yellow.withValues(alpha: 0.3),
                   blurRadius: 60,
                   spreadRadius: 20,
                 ),
@@ -56,9 +56,11 @@ class ScrollableFrostedCard extends StatelessWidget {
                 width: double.infinity,
                 constraints: const BoxConstraints(maxHeight: 650),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.3)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -66,7 +68,7 @@ class ScrollableFrostedCard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: 850,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +109,7 @@ class ScrollableFrostedCard extends StatelessWidget {
 
                     //EXPLORE BY CATEGORY
                     //SHOULD DIRECT USERS TO THE SEARCH WITH FILTER ALREADY ENABLED
-                    Container(
+                    SizedBox(
                       width: 650,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,7 +317,7 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
     //Loads the image url BEFORE the build()
     //Goes constructor, createState(), initState(), build()
     _imageUrlFuture = fetchRandomImageUrl('food');
-    print("Background image url loaded");
+    debugPrint("Background image url loaded");
   }
 
   Future<String> fetchRandomImageUrl(String query) async {
@@ -329,11 +331,11 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
       final json = jsonDecode(response.body);
       final List photos = json['photos'];
       final randomPhoto = photos[Random().nextInt(photos.length)];
-      print(response.statusCode);
+      debugPrint('Pexels response: ${response.statusCode}');
       return randomPhoto['src']['original'];
     } else {
-      print(response.statusCode);
-      throw Exception('Looks like pexel is ass too');
+      debugPrint('Pexels error: ${response.statusCode}');
+      throw Exception('Failed to fetch image');
     }
   }
 
@@ -359,7 +361,7 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
                 image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.3),
+                  Colors.black.withValues(alpha: 0.3),
                   BlendMode.darken,
                 ),
               ),

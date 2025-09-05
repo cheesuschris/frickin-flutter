@@ -21,3 +21,9 @@ impl Settings {
         self.notifications_enabled = !self.notifications_enabled;
     }
 }
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self::new()
+    }
+}

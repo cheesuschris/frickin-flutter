@@ -1,7 +1,5 @@
-use crate::modes::*;
-use anyhow::Result;
-use dotenv::dotenv;
-use mongodb::{bson::doc, options::ClientOptions, Client, Collection, Database};
+// use crate::sup::*;
+use mongodb::{options::ClientOptions, Client};
 use std::env;
 
 #[tokio::main]
@@ -17,7 +15,7 @@ async fn main() -> mongodb::error::Result<()> {
     //app name created
     let client = Client::with_options(client_options)?;
     //mongo_client created
-    let db = client.database("cooking_database");
+    let _db = client.database("cooking_database");
     //db accessed
 
     //DB Collections are as follows:

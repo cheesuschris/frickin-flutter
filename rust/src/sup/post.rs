@@ -2,6 +2,7 @@ use crate::sup::*;
 use chrono::Utc;
 // use flutter_rust_bridge::frb;
 // use serde::{Deserialize, Serialize};
+// use mongodb::{bson::doc, Collection};
 
 impl Post {
     pub fn new(
@@ -11,15 +12,15 @@ impl Post {
         caption: String,
     ) -> Post {
         Post {
-            recipe: recipe,
-            init_recipe_image: init_recipe_image,
+            recipe,
+            init_recipe_image,
             rating_count: 0,
             avg_diff_rating: 0.0,
             avg_taste_rating: 0.0,
             avg_cost_rating: 0.0,
             all_image_follow_ups_to_compare,
             time_stamp: Utc::now(),
-            caption: caption,
+            caption,
             score: 0.0,
         }
     }

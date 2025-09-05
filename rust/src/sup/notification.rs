@@ -9,10 +9,10 @@ impl Notification {
         message: String,
     ) -> Notification {
         Notification {
-            notification_id: notification_id,
-            to_user_id: to_user_id,
-            from_user_id: from_user_id,
-            message: message,
+            notification_id,
+            to_user_id,
+            from_user_id,
+            message,
             read: false,
             createdAtTimeStamp: Utc::now(),
         }
