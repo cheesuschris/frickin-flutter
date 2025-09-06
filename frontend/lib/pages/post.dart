@@ -34,11 +34,9 @@ class _PostPageState extends State<PostPage> {
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: send post payload to backend when implemented
       if (userID == null) {
         debugPrint("Not logged in");
       }
-      // add backend here
 
       ScaffoldMessenger.of(
         context,
