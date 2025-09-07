@@ -17,7 +17,6 @@ from .recipe_posts.routes import recipe_posts
 
 #provide error handling so that data integrity is not comprised
 
-PORT = 8080
 def create_app(test_config=None):
     app = Flask(__name__)
 

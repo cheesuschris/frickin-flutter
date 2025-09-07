@@ -23,8 +23,8 @@ class Notification(db.Mode):
     message = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, default=current_time())
 
+#Going to be null until user updates it in settings
 class Profile(db.Model):
-    #Going to be null until user updates it in settings
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

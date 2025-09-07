@@ -1,13 +1,10 @@
 from ast import Pass
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from werkzeug.utils import secure_filename
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField
+from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import (
     InputRequired,
     Length,
-    Email,
-    EqualTo,
     ValidationError
 )
 
