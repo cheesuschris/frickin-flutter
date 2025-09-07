@@ -21,7 +21,7 @@ class SearchPostForm(FlaskForm):
 class CreateRecipeForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(), Length(min=1, max=50)])
     recipe = TextAreaField("Recipe", validators=[InputRequired(), Length(min=1, max=500)])
-    image = FileField("Recipe Image", validators=[FileRequired(), FileAllowed(["jpg", "png"])])
+    image = StringField("Recipe Image", validators=[InputRequired(), Length(max=500)])
     tags = StringField("Tags", validators=[Length(max=100)])
     submit_recipe = SubmitField("Post Recipe")
 

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from supabase import create_client
 from ..forms import CreateRecipeForm, UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
 from ..models import Profile
-from . import db
+from . import db, current_time
 
 users = Blueprint("users", __name__)
 
@@ -13,6 +13,28 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ User Management views ************ """
 
+@users.route("/initialize_profile", methods=["POST"])
+def create_profile():
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+    user_response = supabase.auth.get_user(token)
+    user = user_response.user
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    if not Profile.query.filter_by(user_id = user.id).first():
+        new_profile = Profile()
+        new_profile.user_id = user.id
+        new_profile.bio = f"Hi, I'm {user.email}."
+        new_profile.username = user.email
+        new_profile.profile_picture_uri = "https://i.pinimg.com/474x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg?nii=t"
+        new_profile.account_created = current_time()
+        new_profile.light_mode = True
+        new_profile.language = "English"
+        new_profile.followers = []
+        new_profile.following = []
+        db.session.add(new_profile)
+        db.session.commit()
+    return jsonify({"success": True}), 200
 
 @users.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -39,9 +61,9 @@ def profile():
                 errors["bio"] = bio_form.errors        
         if errors:
             return jsonify({"success": False, "errors": errors}), 400
-        Profile.query.get(user_id = user.id).update({"username": data.get("username")})
-        Profile.query.get(user_id = user.id).update({"bio": data.get("bio")})
-        Profile.query.get(user_id = user.id).update({"profile_picture_uri": data.get("profile_picture_uri")})
+        Profile.query.filter_by(user_id = user.id).update({"username": data.get("username")})
+        Profile.query.filter_by(user_id = user.id).update({"bio": data.get("bio")})
+        Profile.query.filter_by(user_id = user.id).update({"profile_picture_uri": data.get("profile_picture_uri")})
         db.session.commit()
     return jsonify({"success": True}), 200
 
@@ -53,7 +75,7 @@ def favorites():
     user = user_response.user
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 400
-    liked_posts = Profile.query.get(user_id = user.id).liked_posts
+    liked_posts = Profile.query.filter_by(user_id = user.id).liked_posts
     if not liked_posts:
         return jsonify({"success": True, "empty": True}), 200
     return jsonify({"success": True, "liked_posts": liked_posts}), 200
@@ -66,7 +88,7 @@ def comments():
     user = user_response.user
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 400
-    commented_posts = Profile.query.get(user_id = user.id).commented_posts
+    commented_posts = Profile.query.filter_by(user_id = user.id).commented_posts
     if not commented_posts:
         return jsonify({"success": True, "empty": True}), 200
     return jsonify({"success": True, "liked_posts": commented_posts}), 200
@@ -79,4 +101,12 @@ def settings():
     user = user_response.user
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 400
-    #Implement language selection, dark/light theme, in the future
+    if request.data:
+        data = request.get_json()
+        #Light/Dark Mode and Language Preferences will be buttons, no need for Forms
+        if data.get("light_mode"):
+            Profile.query.filter_by(user_id = user.id).update({"light_mode": data.get("light_mode")})
+        if data.get("language"):    
+            Profile.query.filter_by(user_id = user.id).update({"language": data.get("language")})
+        db.session.commit()
+    return jsonify({"success": True}), 200
