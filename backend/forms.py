@@ -25,10 +25,6 @@ class CreateRecipeForm(FlaskForm):
     tags = StringField("Tags", validators=[Length(max=100)])
     submit_recipe = SubmitField("Post Recipe")
 
-class UpdateBioForm(FlaskForm):
-    bio = TextAreaField("Bio", validators=[InputRequired(), Length(min=1, max=300)])
-    submit_bio = SubmitField("Update bio")
-
 class CommentForm(FlaskForm):
     text = TextAreaField(
         "Comment", validators=[InputRequired(), Length(min=1, max=500)]
@@ -44,5 +40,9 @@ class UpdateUserNameForm(FlaskForm):
             raise ValidationError("Username is taken")
 
 class UpdateProfilePicForm(FlaskForm):
-    picture = FileField("Profile Picture", validators=[FileRequired(), FileAllowed(["jpg", "png"])])
+    picture = StringField("Profile Picture", validators=[InputRequired, Length(min=1, max=255)])
     submit_picture = SubmitField("Update profile picture")
+
+class UpdateBioForm(FlaskForm):
+    bio = TextAreaField("Bio", validators=[InputRequired(), Length(min=1, max=300)])
+    submit_bio = SubmitField("Update bio")

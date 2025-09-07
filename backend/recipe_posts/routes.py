@@ -21,22 +21,7 @@ def post():
     user = user_response.user
     if not user:
         return jsonify({"error": "User not found"}), 404  
-    
     data = request.get_json()
-    form = CreateRecipeForm(data=data)
-    if form.validate():
-        #Create Post model and update the necessary databases with new post, not finished
-        new_post = Post(
-            user_id=user.id,
-            title=form.title.data,
-            recipe=form.recipe.data,
-            image_uri=form.image.data,
-            post_comments=[],
-            timestamp=current_time(),
-            post_likes_count=0
-        )
-    else:
-        return jsonify({"errors": form.errors}), 400
 
 @recipe_posts.route("/search", methods=["GET", "POST"])
 def search():

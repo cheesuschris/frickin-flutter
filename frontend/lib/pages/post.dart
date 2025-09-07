@@ -10,6 +10,33 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    sendDataToBackend({});
+  }
+
+  Future<void> sendDataToBackend(Map<String, dynamic> data) async {
+    final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
+    if (accessToken == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://localhost:5000/post'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print("Profile sent successfully");
+    } else {
+      print("Failed: ${response.statusCode}");
+    }
+  }
+
+  //In the widget, when opening the post page, use sendDataToBackend(map) to send changes to backend
   final _formKey = GlobalKey<FormState>();
   final _recipeController = TextEditingController();
   final _initImageController = TextEditingController();

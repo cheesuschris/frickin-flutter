@@ -13,8 +13,33 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false; // Not final: toggled when navigating to settings
   User? get _currentUser => Supabase.instance.client.auth.currentUser;
 
-  // _signOut removed (unused)
+  @override
+  void initState() {
+    super.initState();
+    sendDataToBackend({});
+  }
 
+  Future<void> sendDataToBackend(Map<String, dynamic> data) async {
+    final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
+    if (accessToken == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://localhost:5000/profile'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print("Profile sent successfully");
+    } else {
+      print("Failed: ${response.statusCode}");
+    }
+  }
+
+  //In the widget, when opening the profile page, use sendDataToBackend(map) to send changes to backend
+  //Add a logout button
   Widget _buildLogoutButton() {
     return IconButton(
       icon: _isLoading

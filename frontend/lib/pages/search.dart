@@ -8,6 +8,34 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchBarC extends State<SearchPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    sendDataToBackend({});
+  }
+
+  Future<void> sendDataToBackend(Map<String, dynamic> data) async {
+    final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
+    if (accessToken == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://localhost:5000/search'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print("Profile sent successfully");
+    } else {
+      print("Failed: ${response.statusCode}");
+    }
+  }
+
+  //In the widget, when opening the search page, use sendDataToBackend(map) to send changes to backend
+  //Implement fuzzy matching search logic (for now, return all. later, return top k results.)
   @override
   Widget build(BuildContext context) {
     return MainScaffold(

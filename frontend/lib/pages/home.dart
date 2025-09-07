@@ -12,6 +12,7 @@ import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+//Do sendDataToBackend with map of changes (feed of ~20 recipes) when opening the home page
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
@@ -377,6 +378,32 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
 
 class _HomePageState extends State<HomePage> {
   User? get _currentUser => Supabase.instance.client.auth.currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    sendDataToBackend({});
+  }
+
+  Future<void> sendDataToBackend(Map<String, dynamic> data) async {
+    final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
+    if (accessToken == null) return;
+
+    final response = await http.post(
+      Uri.parse('http://localhost:5000/landing'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print("Profile sent successfully");
+    } else {
+      print("Failed: ${response.statusCode}");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
