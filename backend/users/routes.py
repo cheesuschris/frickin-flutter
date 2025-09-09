@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from ..forms import CreateRecipeForm, UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
-from ..models import Profile
+from ..models import Profile, Notification
 from . import db, current_time
 
 users = Blueprint("users", __name__)
@@ -12,6 +12,33 @@ SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ User Management views ************ """
+
+""" Core user stuff --> Might have to change based on this
+GET  /users/profile                    # My profile
+PUT  /users/profile                    # Update profile  
+GET  /users/profile/123                # View user 123's profile
+GET  /users/feed                       # My personalized feed
+GET  /users/my_posts                   # My recipe posts
+GET  /users/liked_posts                # Posts I liked
+
+# Social features
+POST /users/follow/123                 # Follow user 123
+GET  /users/following                  # People I follow
+GET  /users/followers                  # My followers
+GET  /users/search_users?q=john        # Search for users
+
+# Notifications
+GET  /users/notifications              # My notifications
+POST /users/notifications/5/mark_read  # Mark notification read
+
+# Settings & account
+GET  /users/settings                   # App settings
+POST /users/change_password            # Change password
+GET  /users/stats                      # My stats
+
+# Collections & preferences  
+GET  /users/collections                # My recipe collections
+PUT  /users/dietary_preferences        # Update diet preferences"""
 
 @users.route("/initialize_profile", methods=["POST"])
 def create_profile():
@@ -83,6 +110,147 @@ def settings():
             profile.update({"language": data.get("language")})
         db.session.commit()
     return jsonify({"success": True, "profile": profile}), 200
+
+@users.route("/notifications", methods=["GET"])
+def get_notifications():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    unread_notifications = Notification.query.filter_by(
+        notified_id=profile.id,
+        read=False
+    ).order_by(Notification.timestamp.desc()).limit(20).all()
+    read_notifications = Notification.query.filter_by(
+        notified_id = profile.id,
+        read = True
+    ).order_by(Notification.timestamp.desc()).limit(20).all()
+    return jsonify({
+        "success": True,
+        "unread_notifications": [{
+            "id": n.id,
+            "type": n.type,
+            "message": n.message,
+            "post_id": n.post_id,
+            "timestamp": n.timestamp.isoformat(),
+            "read": n.read
+        } for n in unread_notifications],
+        "unread_count": len(unread_notifications),
+        "read_notifications": [{
+            "id": n.id,
+            "type": n.type,
+            "message": n.message,
+            "post_id": n.post_id,
+            "timestamp": n.timestamp.isoformat(),
+            "read": n.read
+        } for n in read_notifications],
+        "read_count": len(read_notifications)
+    }), 200
+
+@users.route("/notifications/<int:notif_id>/mark_read", methods=["POST"])
+def mark_notification_read(notif_id):
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    notification = Notification.query.filter_by(
+        id=notif_id,
+        notified_id=profile.id
+    ).first()
+    if notification:
+        notification.read = True
+        db.session.commit()
+        return jsonify({"success": True, "notification": notification}), 200
+    return jsonify({"success": False, "error": "Notification not found"}), 400
+
+@users.route("/follow/<int:user_id>", methods=["POST"])
+def follow_user(user_id):
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    target_profile = Profile.query.filter_by(user_id=user_id).first()
+    if not target_profile:
+        return jsonify({"success": False, "error": "User to follow not found"}), 400
+    if profile.id == target_profile.id:
+        return jsonify({"success": False, "error": "Cannot follow yourself"}), 400
+    if profile.is_following(target_profile):
+        return jsonify({"success": False, "error": "Already following this user"}), 400
+    profile.follow(target_profile)
+    db.session.commit()
+    
+    notif = Notification(
+        notified_id=target_profile.id,
+        type="new_follower",
+        message=f"{profile.username} started following you!",
+        timestamp=current_time()
+    )
+    db.session.add(notif)
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "message": f"Now following {target_profile.username}",
+        "following_count": profile.following_count
+    }), 200
+
+@users.route("/unfollow/<int:user_id>", methods=["POST"])
+def unfollow_user(user_id):
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    target_profile = Profile.query.filter_by(user_id=user_id).first()
+    if not target_profile:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    if not profile.is_following(target_profile):
+        return jsonify({"success": False, "error": "Not following this user"}), 400
+    profile.unfollow(target_profile)
+    db.session.commit()
+
+    #Don't create notif for unfollow
+    
+    return jsonify({
+        "success": True,
+        "message": f"Unfollowed {target_profile.username}",
+        "following_count": profile.following_count
+    })
+
+@users.route("/following", methods=["GET"])
+def get_following():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    following = [{
+        "id": f.id,
+        "user_id": f.user_id,
+        "username": f.username,
+        "profile_picture_uri": f.profile_picture_uri
+    } for f in profile.following]
+    return jsonify({
+        "success": True,
+        "following": following,
+        "count": len(following)
+    }), 200
+
+@users.route("/followers", methods=["GET"])
+def get_followers():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 400
+    profile = get_or_create_profile(user)
+    followers = [{
+        "id": f.id,
+        "user_id": f.user_id,
+        "username": f.username,
+        "profile_picture_uri": f.profile_picture_uri
+    } for f in profile.followers]
+    return jsonify({
+        "success": True,
+        "followers": followers,
+        "count": len(followers)
+    }), 200
 
 """ ************ Helper functions ************ """
 

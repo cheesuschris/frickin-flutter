@@ -41,6 +41,18 @@ followers_association = db.Table('followers',
     db.Column('created_at', db.DateTime, default = current_time())
 )
 
+post_likes = db.Table('post_likes',
+    db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'), primary_key=True),
+    db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
+    db.Column('created_at', db.DateTime, default=current_time())
+)
+
+post_comments = db.Table('post_comments',
+    db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'), primary_key=True),
+    db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
+    db.Column('created_at', db.DateTime, default=current_time())
+)
+
 #Going to be null until user updates it in settings
 class Profile(db.Model):
     __tablename__ = 'profiles'
@@ -50,14 +62,23 @@ class Profile(db.Model):
     bio = db.Column(db.String(300))
     username = db.Column(db.String(100))
     profile_picture_uri = db.Column(db.String(255))
-    posts = db.relationship('Post', backref='author', lazy=True) #gives us Profile.posts and Post.author
+    posts = db.relationship('Post',
+                            primaryjoin='Profile.user_id == Post.user_id',
+                            backref='author',
+                            lazy=True) #gives us Profile.posts and Post.author
     notifications = db.relationship('Notification', backref='profile', lazy=True) #gives us Profile.notifications and Notification.profile
     account_created = db.Column(db.DateTime, default=current_time())
-    liked_posts = db.relationship('Post', backref = 'liked_by', lazy=True) #gives us Profile.liked_posts and Post.like_by
+    liked_posts = db.relationship('Post', 
+                                secondary=post_likes,
+                                backref=db.backref('liked_by', lazy='dynamic'),
+                                lazy='dynamic') #gives us Profile.liked_posts and Post.like_by
     light_mode = db.Column(db.Boolean, default=True)
     language = db.Column(db.String(50), default="English")
     #Own user comments should appear first, calculate in real time
-    commented_posts = db.relationship('Post', backref = 'commented_by', lazy=True) #gives us Profile.commented_posts and Post.commented_by
+    commented_posts = db.relationship('Post', 
+                                        secondary=post_comments,
+                                        backref=db.backref('commented_by', lazy='dynamic'),
+                                        lazy='dynamic') #gives us Profile.commented_posts and Post.commented_by
     #Later down the road, switch followers and following to a graphDB for better mutual suggestions
     following = db.relationship('Profile', 
                                 secondary = followers_association,
@@ -67,15 +88,40 @@ class Profile(db.Model):
                                 lazy='dynamic'
                                 )
     def follow(self, profile):
-        if not self.is_following(profile) and profile != self:
-            self.following.append(profile)
+        #TODO
+        """Unimplemented"""
     
     def unfollow(self, profile):
-        if self.is_following(profile):
-            self.following.remove(profile)
-    
+        #TODO
+        """Unimplemented"""
+
     def is_following(self, profile):
-        return self.following.filter(followers_association.c.following_id == profile.id).count() > 0
+        #TODO
+        """Unimplemented"""
+
+    def like_post(self, post):
+        #TODO
+        """Unimplemented"""
+
+    def unlike_post(self, post):
+        #TODO
+        """Unimplemented"""
+
+    def has_liked_post(self, post):
+        #TODO
+        """Unimplemented"""
+    
+    def comment_on_post(self, post):
+        #TODO
+        """Unimplemented"""
+
+    def delete_comment_on_post(self, post):
+        #TODO
+        """Unimplemented"""
+    
+    def has_commented_on_post(self, post):
+        #TODO
+        """Unimplemented"""
 
     def get_share_profile_link(self):
         #change this
