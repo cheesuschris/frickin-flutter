@@ -5,17 +5,18 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from hashids import Hashids
 import os, base64
 
-hashids = Hashids(salt=base64.b64encode(os.urandom(16)).decode('utf-8'), min_length=6)
+hashids = Hashids("CheesyCarrotLemonBaldmeyaKleeWill1234554321", min_length=6)
 
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.Relationship('User', backref = 'posts', lazy=True) #gives us Post.user and User.posts
     title = db.Column(db.String(50))
     recipe = db.Column(db.String(500))
     image_uri = db.Column(db.String(255))
-    tags = db.Column(ARRAY(db.string))
-    comments = db.Column(ARRAY(db.string))
+    tags = db.Column(ARRAY(db.String))
+    comments = db.Column(ARRAY(db.String))
     timestamp = db.Column(db.DateTime, default=current_time())
     likes_count = db.Column(db.Integer)
 
@@ -23,11 +24,12 @@ class Post(db.Model):
         #change this
         return f"https://frickin-flutter/search/{hashids.encode(id)}"
 
-class Notification(db.Mode):
+class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    notified_id = db.Column(db.Integer)
-    post_id = db.Relationship('Post', backref = 'linked_post', lazy=True)
+    notified_id = db.Column(db.Integer, db.ForeignKey('profiles.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    post = db.Relationship('Post', backref = 'notifications', lazy=True) #gives us Notification.post and Post.notifications
     type = db.Column(db.String(50)) #Either liked_post, new_post, new_comment, new_follower
     message = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, default=current_time())
@@ -44,11 +46,12 @@ class Profile(db.Model):
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.Relationship('User', backref = 'Profile', lazy=True) #gives us Profile.user and User.profile
     bio = db.Column(db.String(300))
     username = db.Column(db.String(100))
     profile_picture_uri = db.Column(db.String(255))
     posts = db.relationship('Post', backref='author', lazy=True) #gives us Profile.posts and Post.author
-    notifications = db.relationship('Notification', backref='notified_user', lazy=True)
+    notifications = db.relationship('Notification', backref='profile', lazy=True) #gives us Profile.notifications and Notification.profile
     account_created = db.Column(db.DateTime, default=current_time())
     liked_posts = db.relationship('Post', backref = 'liked_by', lazy=True)
     light_mode = db.Column(db.Boolean, default=True)
@@ -83,7 +86,7 @@ class Profile(db.Model):
         return self.followers.count()
     
     @property
-    def followers_count(self):
+    def following_count(self):
         return self.following.count()
     
    
