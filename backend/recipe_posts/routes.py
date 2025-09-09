@@ -31,6 +31,7 @@ def post():
             notif = Notification(notified_id = profile.id, post_id = post.id, type = "new_post", message = f"{profile.username} has created a new post!", timestamp = current_time())
             db.session.add(notif)
             db.session.commit()
+    
 
 @recipe_posts.route("/search", methods=["GET", "POST"])
 def search():

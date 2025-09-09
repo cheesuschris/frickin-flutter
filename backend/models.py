@@ -53,11 +53,11 @@ class Profile(db.Model):
     posts = db.relationship('Post', backref='author', lazy=True) #gives us Profile.posts and Post.author
     notifications = db.relationship('Notification', backref='profile', lazy=True) #gives us Profile.notifications and Notification.profile
     account_created = db.Column(db.DateTime, default=current_time())
-    liked_posts = db.relationship('Post', backref = 'liked_by', lazy=True)
+    liked_posts = db.relationship('Post', backref = 'liked_by', lazy=True) #gives us Profile.liked_posts and Post.like_by
     light_mode = db.Column(db.Boolean, default=True)
     language = db.Column(db.String(50), default="English")
     #Own user comments should appear first, calculate in real time
-    commented_posts = db.relationship('Post', backref = 'commented_by', lazy=True)
+    commented_posts = db.relationship('Post', backref = 'commented_by', lazy=True) #gives us Profile.commented_posts and Post.commented_by
     #Later down the road, switch followers and following to a graphDB for better mutual suggestions
     following = db.relationship('Profile', 
                                 secondary = followers_association,
