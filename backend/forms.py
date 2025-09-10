@@ -10,14 +10,12 @@ from wtforms.validators import (
 
 from .models import Profile
 
-#Will search for both users and posts, UI/UX would have tabs to switch between search filters
 class SearchPostForm(FlaskForm):
     search_query = StringField(
         "Query", validators=[InputRequired(), Length(min=1, max=100)]    
     )
     submit_search = SubmitField("Search")
 
-#Later on, do better UI for adding recipe
 class CreateRecipeForm(FlaskForm):
     title = StringField("Title", validators=[InputRequired(), Length(min=1, max=50)])
     recipe = TextAreaField("Recipe", validators=[InputRequired(), Length(min=1, max=500)])

@@ -75,6 +75,11 @@ def post():
         }), 200
     return jsonify({"success": True, "empty": True}), 200
 
+@recipe_posts.route("/search", methods=["GET"])
+def search():
+    #Will search for both users and posts, UI/UX would have tabs to switch between search filters
+    print("Kenny do elastic search with this")
+
 """ ************ Helper functions ************ """
 
 def get_user(auth_header):

@@ -12,15 +12,7 @@ SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ User Management views ************ """
-
-""" Core user stuff --> Might have to change based on this
-GET  /users/profile                    # My profile
-PUT  /users/profile                    # Update profile  
-GET  /users/profile/123                # View user 123's profile
-GET  /users/feed                       # My personalized feed
-GET  /users/my_posts                   # My recipe posts
-GET  /users/liked_posts                # Posts I liked
-
+"""
 # Social features
 POST /users/follow/123                 # Follow user 123
 GET  /users/following                  # People I follow
@@ -40,50 +32,76 @@ GET  /users/stats                      # My stats
 GET  /users/collections                # My recipe collections
 PUT  /users/dietary_preferences        # Update diet preferences"""
 
-@users.route("/initialize_profile", methods=["POST"])
-def create_profile():
-    user = get_user(request.headers.get("Authorization", ""))
-    profile = get_or_create_profile(user)
-    return jsonify({"success": True, "profile": profile}), 200
-
 @users.route("/profile", methods=["GET", "POST"])
 def profile():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
-    if request.data:
-        data = request.get_json()
-        errors = {}
-        if data.get("username"):
-            username_form = UpdateUserNameForm({"username": data.get("username")})
-            if not username_form.validate():
-                errors["username"] = username_form.errors
-        if data.get("profile_picture_uri"):
-            profile_picture_uri_form = UpdateProfilePicForm({"picture": data.get("profile_picture_uri")})
-            if not profile_picture_uri_form.validate():
-                errors["pfp_pic"] = profile_picture_uri_form.errors
-        if data.get("bio"):
-            bio_form = UpdateBioForm({"bio": data.get("bio")})
-            if not bio_form.validate():
-                errors["bio"] = bio_form.errors        
-        if errors:
-            return jsonify({"success": False, "errors": errors}), 400
-        profile.update({"username": data.get("username")})
-        profile.update({"bio": data.get("bio")})
-        profile.update({"profile_picture_uri": data.get("profile_picture_uri")})
-        db.session.commit()
+    if request.method == "POST":
+        if request.data:
+            data = request.get_json()
+            errors = {}
+            if data.get("username"):
+                username_form = UpdateUserNameForm({"username": data.get("username")})
+                if not username_form.validate():
+                    errors["username"] = username_form.errors
+            if data.get("profile_picture_uri"):
+                profile_picture_uri_form = UpdateProfilePicForm({"picture": data.get("profile_picture_uri")})
+                if not profile_picture_uri_form.validate():
+                    errors["pfp_pic"] = profile_picture_uri_form.errors
+            if data.get("bio"):
+                bio_form = UpdateBioForm({"bio": data.get("bio")})
+                if not bio_form.validate():
+                    errors["bio"] = bio_form.errors        
+            if errors:
+                return jsonify({"success": False, "errors": errors}), 400
+            profile.update({"username": data.get("username")})
+            profile.update({"bio": data.get("bio")})
+            profile.update({"profile_picture_uri": data.get("profile_picture_uri")})
+            db.session.commit()
+        else:
+            return jsonify({"success": False, "error": "No data found"}), 404
     return jsonify({"success": True, "profile": profile}), 200
 
-@users.route("/favorites", methods=["GET"])
+#profile_id, not user_id because later on we might have the user create multiple profiles and delete some as well
+@users.route("/profile/<int:profile_id>", methods=["GET"])
+def view_profile(profile_id):
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    profile_to_view = Profile.query.filter_by(id=profile_id).first()
+    if not profile_to_view:
+        return jsonify({"success": False, "error": "User profile you wish to see doesn't exist"}), 404
+    return jsonify({"success": True, "profile": profile_to_view}), 200
+
+@users.route("/profile/posts", methods=["GET"])
+def posts():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    profile = get_or_create_profile(user)
+    posts = profile.posts
+    return jsonify({"success": True, "posts": posts}), 200
+
+@users.route("/profile/favorites", methods=["GET"])
 def favorites(): 
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    profile = get_or_create_profile(user)
+    posts = profile.liked_posts
+    return jsonify({"success": True, "liked_posts": posts}), 200
+
+
+
+@users.route("/feed", methods=["GET"])
+def feed():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 400
     profile = get_or_create_profile(user)
-    if not profile.liked_posts:
-        return jsonify({"success": True, "empty": True}), 200
-    return jsonify({"success": True, "liked_posts": profile.liked_posts}), 200
+
 
 @users.route("/comments", methods=["GET"])
 def comments():

@@ -11,18 +11,13 @@ from .recipe_posts.routes import recipe_posts
 
 #TODO
 
-#define routes to create read update and delete records for the above entities
-
-#connect to the supabase database upon server initialization
-
-#provide error handling so that data integrity is not comprised
-
 def create_app(test_config=None):
     app = Flask(__name__)
 
     app.register_blueprint(recipe_posts)
     app.register_blueprint(users)
     #REPLACE THIS
+    #connect to the supabase database upon server initialization
     app.config['SQLALCHEMY_DATABASE_URI'] = 'REPLACE THIS'
     db = SQLAlchemy(app)
     db.create_all()
