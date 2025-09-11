@@ -3,6 +3,7 @@ from supabase import create_client
 from ..forms import CreateRecipeForm, UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
 from ..models import Profile, Notification
 from . import db, current_time
+from hashids import Hashids
 
 users = Blueprint("users", __name__)
 
@@ -12,25 +13,6 @@ SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ User Management views ************ """
-"""
-# Social features
-POST /users/follow/123                 # Follow user 123
-GET  /users/following                  # People I follow
-GET  /users/followers                  # My followers
-GET  /users/search_users?q=john        # Search for users
-
-# Notifications
-GET  /users/notifications              # My notifications
-POST /users/notifications/5/mark_read  # Mark notification read
-
-# Settings & account
-GET  /users/settings                   # App settings
-POST /users/change_password            # Change password
-GET  /users/stats                      # My stats
-
-# Collections & preferences  
-GET  /users/collections                # My recipe collections
-PUT  /users/dietary_preferences        # Update diet preferences"""
 
 @users.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -76,7 +58,7 @@ def view_profile(profile_id):
     return jsonify({"success": True, "profile": profile_to_view}), 200
 
 @users.route("/profile/posts", methods=["GET"])
-def posts():
+def get_posts():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 404
@@ -85,7 +67,7 @@ def posts():
     return jsonify({"success": True, "posts": posts}), 200
 
 @users.route("/profile/favorites", methods=["GET"])
-def favorites(): 
+def get_favorites(): 
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 404
@@ -93,47 +75,39 @@ def favorites():
     posts = profile.liked_posts
     return jsonify({"success": True, "liked_posts": posts}), 200
 
-
-
-@users.route("/feed", methods=["GET"])
-def feed():
+@users.route("/profile/comments", methods=["GET"])
+def get_comments():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
+    posts = profile.commented_posts
+    return jsonify({"success": True, "commented_posts": posts}), 200
 
-
-@users.route("/comments", methods=["GET"])
-def comments():
+@users.route("/profile/settings", methods=["GET", "POST"])
+def additional_settings():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
-    profile = get_or_create_profile(user)
-    if not profile.commented_posts:
-        return jsonify({"success": True, "empty": True}), 200
-    return jsonify({"success": True, "commented_posts": profile.commented_posts}), 200
-
-@users.route("/settings", methods=["GET", "POST"])
-def settings():
-    user = get_user(request.headers.get("Authorization", ""))
-    if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = Profile.query.filter_by(user_id = user.id).first()
-    if request.data:
-        data = request.get_json()
-        #Light/Dark Mode and Language Preferences will be buttons or dropdowns, no need for Forms
-        if data.get("light_mode") is not None:
-            profile.update({"light_mode": data.get("light_mode")})
-        if data.get("language") is not None:    
-            profile.update({"language": data.get("language")})
-        db.session.commit()
+    if request.method == "POST":
+        if request.data:
+            data = request.get_json()
+            #Light/Dark Mode and Language Preferences will be buttons or dropdowns, no need for Forms
+            if data.get("light_mode") is not None:
+                profile.update({"light_mode": data.get("light_mode")})
+            if data.get("language") is not None:    
+                profile.update({"language": data.get("language")})
+            db.session.commit()
+        else:
+            return jsonify({"success": False, "error": "No additional settings provided"}), 404
     return jsonify({"success": True, "profile": profile}), 200
 
-@users.route("/notifications", methods=["GET"])
+@users.route("/profile/notifications", methods=["GET"])
 def get_notifications():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     unread_notifications = Notification.query.filter_by(
         notified_id=profile.id,
@@ -165,11 +139,11 @@ def get_notifications():
         "read_count": len(read_notifications)
     }), 200
 
-@users.route("/notifications/<int:notif_id>/mark_read", methods=["POST"])
+@users.route("/profile/notifications/<int:notif_id>/mark_read", methods=["POST"])
 def mark_notification_read(notif_id):
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     notification = Notification.query.filter_by(
         id=notif_id,
@@ -179,24 +153,23 @@ def mark_notification_read(notif_id):
         notification.read = True
         db.session.commit()
         return jsonify({"success": True, "notification": notification}), 200
-    return jsonify({"success": False, "error": "Notification not found"}), 400
+    return jsonify({"success": False, "error": "Notification not found"}), 404
 
-@users.route("/follow/<int:user_id>", methods=["POST"])
+@users.route("/profile/follow/<int:user_id>", methods=["POST"])
 def follow_user(user_id):
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     target_profile = Profile.query.filter_by(user_id=user_id).first()
     if not target_profile:
-        return jsonify({"success": False, "error": "User to follow not found"}), 400
+        return jsonify({"success": False, "error": "User to follow not found"}), 404
     if profile.id == target_profile.id:
         return jsonify({"success": False, "error": "Cannot follow yourself"}), 400
     if profile.is_following(target_profile):
         return jsonify({"success": False, "error": "Already following this user"}), 400
     profile.follow(target_profile)
     db.session.commit()
-    
     notif = Notification(
         notified_id=target_profile.id,
         type="new_follower",
@@ -205,40 +178,35 @@ def follow_user(user_id):
     )
     db.session.add(notif)
     db.session.commit()
-    
     return jsonify({
         "success": True,
         "message": f"Now following {target_profile.username}",
         "following_count": profile.following_count
     }), 200
 
-@users.route("/unfollow/<int:user_id>", methods=["POST"])
+@users.route("/profile/unfollow/<int:user_id>", methods=["DELETE"])
 def unfollow_user(user_id):
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     target_profile = Profile.query.filter_by(user_id=user_id).first()
     if not target_profile:
-        return jsonify({"success": False, "error": "User not found"}), 400
-    if not profile.is_following(target_profile):
-        return jsonify({"success": False, "error": "Not following this user"}), 400
-    profile.unfollow(target_profile)
+        return jsonify({"success": False, "error": "User to unfollow not found"}), 404
+    profile.unfollow(target_profile) #let this handle the user already being unfollowed
     db.session.commit()
-
     #Don't create notif for unfollow
-    
     return jsonify({
         "success": True,
-        "message": f"Unfollowed {target_profile.username}",
+        "message": f"No longer following {target_profile.username}",
         "following_count": profile.following_count
-    })
+    }), 200
 
-@users.route("/following", methods=["GET"])
+@users.route("/profile/following", methods=["GET"])
 def get_following():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     following = [{
         "id": f.id,
@@ -252,11 +220,11 @@ def get_following():
         "count": len(following)
     }), 200
 
-@users.route("/followers", methods=["GET"])
+@users.route("/profile/followers", methods=["GET"])
 def get_followers():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
-        return jsonify({"success": False, "error": "User not found"}), 400
+        return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     followers = [{
         "id": f.id,
@@ -269,6 +237,61 @@ def get_followers():
         "followers": followers,
         "count": len(followers)
     }), 200
+
+@users.route("/profile/change_password", method=["PUT"])
+def change_password():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    current_password = user.password_hash
+    if request.data():
+        data = request.get_json()
+        old_password = data.get("old_password")
+        if old_password != current_password:
+            return jsonify({"success": False, "error": "Provided old password and current password do not match"}), 400
+        else:
+            new_password = data.get("new_password")
+            try:
+                supabase.auth.update_user({"password": new_password})
+                return jsonify({"success": True, "new_password": new_password}), 200
+            except Exception as e:
+                error_msg = str(e).lower()
+                client_errors = [
+                    'weak_password', 'same_password', 'validation_failed',
+                    'session_expired', 'session_not_found', 'reauthentication_needed'
+                ]
+                if any(code in error_msg for code in client_errors):
+                    return jsonify({"success": False, "error": str(e)}), 400
+                else:
+                    return jsonify({"success": False, "error": str(e)}), 500 
+    else:
+        return jsonify({"success": False, "error": "No forms filled"}), 404
+
+@users.route("/logout", method=["POST"])
+def logout():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    try:
+        supabase.auth.sign_out()
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+#TODO
+@users.route("/profile/feed", methods=["GET"])
+def get_feed():
+    user = get_user(request.headers.get("Authorization", ""))
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    profile = get_or_create_profile(user)
+    followers = profile.followers
+    following = profile.following
+    #Get following and followers' recipes, filtered by unread and ordered by timestamp
+    #Then randomly get explore page recipes
+
+#TODO
+# FOR THE FUTURE: Add collections and dietary_preferences routes, as well as maybe models for them as well
 
 """ ************ Helper functions ************ """
 

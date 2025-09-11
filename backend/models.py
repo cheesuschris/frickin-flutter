@@ -93,6 +93,7 @@ class Profile(db.Model):
     
     def unfollow(self, profile):
         #TODO
+        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE FOLLOW IS FOUND
         """Unimplemented"""
 
     def is_following(self, profile):
@@ -105,6 +106,7 @@ class Profile(db.Model):
 
     def unlike_post(self, post):
         #TODO
+        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE LIKE IS FOUND
         """Unimplemented"""
 
     def has_liked_post(self, post):
@@ -117,6 +119,7 @@ class Profile(db.Model):
 
     def delete_comment_on_post(self, post):
         #TODO
+        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE COMMENT IS FOUND
         """Unimplemented"""
     
     def has_commented_on_post(self, post):

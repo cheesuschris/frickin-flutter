@@ -13,7 +13,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ Recipe Post views ************ """
 
-"""# Basic CRUD --> Might have to change based on this
+"""
 POST   /recipe_posts/post                    # Create recipe
 GET    /recipe_posts/post/123                # View recipe
 PUT    /recipe_posts/post/123                # Edit recipe  
@@ -35,12 +35,7 @@ GET    /recipe_posts/random                 # Random recipe
 GET    /recipe_posts/categories             # All categories
 GET    /recipe_posts/category/breakfast     # Breakfast recipes
 GET    /recipe_posts/tag/healthy            # Healthy recipes
-
-# Advanced features
-POST   /recipe_posts/post/123/rate          # Rate recipe
-POST   /recipe_posts/post/123/fork          # Create variation
-GET    /recipe_posts/filter?time=30&diet=vegan # Advanced filtering
-GET    /recipe_posts/by_ingredients?ing=chicken,rice # Recipe finder"""
+"""
 
 @recipe_posts.route("/post", methods=["POST"])
 def post():
