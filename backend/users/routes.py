@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
 from ..forms import CreateRecipeForm, UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
-from ..models import Profile, Notification
+from ..models import Profile, Notification, Post, User
 from . import db, current_time
 from hashids import Hashids
+from sqlalchhemy import func
+from datetime import datetime
+from collections import deque
+import random
 
 users = Blueprint("users", __name__)
 
@@ -13,6 +17,8 @@ SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """ ************ User Management views ************ """
+
+"""Profile level routes"""
 
 @users.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -121,7 +127,7 @@ def get_notifications():
         "success": True,
         "unread_notifications": [{
             "id": n.id,
-            "type": n.type,
+            "type": n.notif_type,
             "message": n.message,
             "post_id": n.post_id,
             "timestamp": n.timestamp.isoformat(),
@@ -130,7 +136,7 @@ def get_notifications():
         "unread_count": len(unread_notifications),
         "read_notifications": [{
             "id": n.id,
-            "type": n.type,
+            "type": n.notif_type,
             "message": n.message,
             "post_id": n.post_id,
             "timestamp": n.timestamp.isoformat(),
@@ -172,7 +178,7 @@ def follow_user(user_id):
     db.session.commit()
     notif = Notification(
         notified_id=target_profile.id,
-        type="new_follower",
+        notif_type="new_follower",
         message=f"{profile.username} started following you!",
         timestamp=current_time()
     )
@@ -238,7 +244,9 @@ def get_followers():
         "count": len(followers)
     }), 200
 
-@users.route("/profile/change_password", method=["PUT"])
+"""User level routes"""
+
+@users.route("/user/change_password", method=["PUT"])
 def change_password():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
@@ -259,7 +267,7 @@ def change_password():
                 client_errors = [
                     'weak_password', 'same_password', 'validation_failed',
                     'session_expired', 'session_not_found', 'reauthentication_needed'
-                ]
+                ] #These are the responses for supabase invalid password I think
                 if any(code in error_msg for code in client_errors):
                     return jsonify({"success": False, "error": str(e)}), 400
                 else:
@@ -267,7 +275,7 @@ def change_password():
     else:
         return jsonify({"success": False, "error": "No forms filled"}), 404
 
-@users.route("/logout", method=["POST"])
+@users.route("/user/logout", method=["POST"])
 def logout():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
@@ -278,28 +286,45 @@ def logout():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-#TODO
 @users.route("/profile/feed", methods=["GET"])
 def get_feed():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
-    followers = profile.followers
-    following = profile.following
-    #Get following and followers' recipes, filtered by unread and ordered by timestamp
-    #Then randomly get explore page recipes
+    unread_notifications = Notification.query.filter_by(notified_id = profile.id, notif_type = 'new_post', read=False).order_by(Notification.timestamp.desc()).limit(35).all()
+    unread_posts = [n.post for n in unread_notifications if n.post]
+    explore_posts = Post.query.join(User).join(Profile)\
+    .order_by( 
+        ((Post.likes_count / func.greatest(Profile.follower_count, 1)) * 
+         (1.0 / (1 + func.extract('epoch', datetime.now() - Post.timestamp) / 86400)) * 100 
+        ).desc() 
+    ).limit(15).all() #Score calculation: Likes per follower (1 if no followers), boosted by recency
+    feed = []
+    unread_q = deque(unread_posts)
+    explore_q = deque(explore_posts)
+    while unread_q and explore_q:
+        if random.random() < 0.7: # focus more on following posts
+            feed.append(unread_q.popleft())
+        else:
+            feed.append(explore_q.popleft())
+    while unread_q:
+        feed.append(unread_q.popleft())
+    while explore_q:
+        feed.append(explore_q.popleft())
+    return jsonify({"success": True, "ordered_feed": feed}), 200
 
 #TODO
-# FOR THE FUTURE: Add collections and dietary_preferences routes, as well as maybe models for them as well
+# FOR THE FUTURE: Add profile collections routes, as well as maybe models for them as well
 
 """ ************ Helper functions ************ """
 
 def get_user(auth_header):
     token = auth_header.replace("Bearer ", "")
     user_response = supabase.auth.get_user(token)
-    user = user_response.user
-    return user
+    auth_user = user_response.user
+    db_user = User.query.filter_by(id=auth_user.id).first()
+    return db_user
 
 def get_or_create_profile(user):
     profile = Profile.query.filter_by(user_id=user.id).first()

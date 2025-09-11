@@ -27,6 +27,7 @@ POST   /recipe_posts/post/123/comments       # Add comment
 
 # Discovery
 GET    /recipe_posts/search?q=chicken        # Search recipes
+GET    /recipe_posts/category               # Dietary preference recipes
 GET    /recipe_posts/trending               # Trending recipes
 GET    /recipe_posts/recent                 # Recent recipes
 GET    /recipe_posts/random                 # Random recipe

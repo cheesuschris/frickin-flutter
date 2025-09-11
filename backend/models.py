@@ -7,6 +7,14 @@ import os, base64
 
 hashids = Hashids("CheesyCarrotLemonBaldmeyaKleeWill1234554321", min_length=6)
 
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.String, primary_key=True)
+    email = db.Column(db.String)
+    password_hash = db.Column(db.String) #I'M PRETTY SURE WE DON'T NEED THIS
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
+
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -30,7 +38,7 @@ class Notification(db.Model):
     notified_id = db.Column(db.Integer, db.ForeignKey('profiles.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post = db.Relationship('Post', backref = 'notifications', lazy=True) #gives us Notification.post and Post.notifications
-    type = db.Column(db.String(50)) #Either liked_post, new_post, new_comment, new_follower
+    notif_type = db.Column(db.String(50)) #Either liked_post, new_post, new_comment, new_follower
     message = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, default=current_time())
     read = db.Column(db.Boolean, default = False)
@@ -53,7 +61,6 @@ post_comments = db.Table('post_comments',
     db.Column('created_at', db.DateTime, default=current_time())
 )
 
-#Going to be null until user updates it in settings
 class Profile(db.Model):
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -87,6 +94,8 @@ class Profile(db.Model):
                                 backref = 'followers',
                                 lazy='dynamic'
                                 )
+    follower_count = db.Column(db.Integer, default=0)
+    following_count = db.Column(db.Integer, default=0)
     def follow(self, profile):
         #TODO
         """Unimplemented"""
@@ -129,13 +138,4 @@ class Profile(db.Model):
     def get_share_profile_link(self):
         #change this
         return f"https://frickin-flutter/profile/{hashids.encode(id)}"
-
-    @property
-    def followers_count(self):
-        return self.followers.count()
-    
-    @property
-    def following_count(self):
-        return self.following.count()
-    
    
