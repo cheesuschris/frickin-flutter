@@ -87,7 +87,7 @@ def get_comments():
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
-    posts = profile.commented_posts
+    posts = profile.get_commented_posts()
     return jsonify({"success": True, "commented_posts": posts}), 200
 
 @users.route("/profile/settings", methods=["GET", "POST"])
@@ -314,8 +314,7 @@ def get_feed():
         feed.append(explore_q.popleft())
     return jsonify({"success": True, "ordered_feed": feed}), 200
 
-#TODO
-# FOR THE FUTURE: Add profile collections routes, as well as maybe models for them as well
+#TODO FOR THE FUTURE: Add profile collections (like a pinterest board) routes, as well as maybe models for them as well
 
 """ ************ Helper functions ************ """
 

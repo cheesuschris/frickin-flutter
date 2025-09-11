@@ -11,7 +11,6 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.String, primary_key=True)
     email = db.Column(db.String)
-    password_hash = db.Column(db.String) #I'M PRETTY SURE WE DON'T NEED THIS
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 
@@ -24,13 +23,37 @@ class Post(db.Model):
     recipe = db.Column(db.String(500))
     image_uri = db.Column(db.String(255))
     tags = db.Column(ARRAY(db.String))
-    comments = db.Column(ARRAY(db.String))
-    timestamp = db.Column(db.DateTime, default=current_time())
-    likes_count = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, default=current_time()) 
 
     def get_share_post_link(self):
-        #change this
-        return f"https://frickin-flutter/search/{hashids.encode(id)}"
+        #TODO change this
+        return f"http://localhost:3000/search/{hashids.encode(id)}"
+    
+    @property
+    def like_count(self):
+        return self.liked_by.count()
+    
+    @property
+    def liked_by(self):
+        return self.liked_by.all()
+
+    @property
+    def comment_count(self):
+        return self.comments.count()
+    
+    @property
+    def commented_by(self):
+        return [comment.profile for comment in self.comments]
+    
+class Comment(db.Model):
+    __tablename__ = 'post_comments'
+    id = db.Column(db.Integer, primary_key=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=current_time())
+    profile = db.relationship('Profile', backref='comments') #gives us Comment.profile and Profile.comments
+    post = db.relationship('Post', backref='comments') #gives us Comment.post and Post.comments
 
 class Notification(db.Model):
     __tablename__ = 'notifications'
@@ -50,12 +73,6 @@ followers_association = db.Table('followers',
 )
 
 post_likes = db.Table('post_likes',
-    db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'), primary_key=True),
-    db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
-    db.Column('created_at', db.DateTime, default=current_time())
-)
-
-post_comments = db.Table('post_comments',
     db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'), primary_key=True),
     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True),
     db.Column('created_at', db.DateTime, default=current_time())
@@ -81,11 +98,6 @@ class Profile(db.Model):
                                 lazy='dynamic') #gives us Profile.liked_posts and Post.like_by
     light_mode = db.Column(db.Boolean, default=True)
     language = db.Column(db.String(50), default="English")
-    #Own user comments should appear first, calculate in real time
-    commented_posts = db.relationship('Post', 
-                                        secondary=post_comments,
-                                        backref=db.backref('commented_by', lazy='dynamic'),
-                                        lazy='dynamic') #gives us Profile.commented_posts and Post.commented_by
     #Later down the road, switch followers and following to a graphDB for better mutual suggestions
     following = db.relationship('Profile', 
                                 secondary = followers_association,
@@ -94,48 +106,45 @@ class Profile(db.Model):
                                 backref = 'followers',
                                 lazy='dynamic'
                                 )
-    follower_count = db.Column(db.Integer, default=0)
-    following_count = db.Column(db.Integer, default=0)
+
     def follow(self, profile):
-        #TODO
-        """Unimplemented"""
+        self.following.append(profile) #backref is auto updated in association table
     
     def unfollow(self, profile):
-        #TODO
-        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE FOLLOW IS FOUND
-        """Unimplemented"""
+        if profile in self.following:
+            self.following.remove(profile)
 
     def is_following(self, profile):
-        #TODO
-        """Unimplemented"""
+        return profile in self.following
 
     def like_post(self, post):
-        #TODO
-        """Unimplemented"""
+        self.liked_posts.append(post) #backref is auto updated in association table
 
     def unlike_post(self, post):
-        #TODO
-        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE LIKE IS FOUND
-        """Unimplemented"""
+        if post in self.liked_posts:
+            self.liked_posts.remove(post)
 
     def has_liked_post(self, post):
-        #TODO
-        """Unimplemented"""
+        return post in self.liked_posts
     
-    def comment_on_post(self, post):
-        #TODO
-        """Unimplemented"""
+    def comment_on_post(self, post, content):
+        comment = Comment(profile = self, post = post, content = content)
+        db.session.add(comment)
+        db.session.commit()
 
-    def delete_comment_on_post(self, post):
-        #TODO
-        #SHOULD SUPPORT A DELETE METHOD, IDEMPOTENT --> ONLY DELETE IF THE COMMENT IS FOUND
-        """Unimplemented"""
+    def delete_comment_on_post(self, comment_id):
+        comment = Comment.query.filter_by(id = comment_id, profile_id = self.id).first()
+        if comment:
+            db.session.delete(comment)
+            db.session.commit()
     
     def has_commented_on_post(self, post):
-        #TODO
-        """Unimplemented"""
+        return Comment.query.filter_by(profile_id=self.id, post_id=post.id).first() is not None #most efficient approach
+    
+    def get_commented_posts(self):
+        return [comment.post for comment in self.comments]
 
     def get_share_profile_link(self):
-        #change this
-        return f"https://frickin-flutter/profile/{hashids.encode(id)}"
+        #TODO change this
+        return f"http://localhost:3000/profile/{hashids.encode(id)}"
    
