@@ -1,8 +1,5 @@
 from . import db
 from . import current_time
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import ARRAY
-import os, base64
 
 class User(db.Model):
     __tablename__ = 'user'
