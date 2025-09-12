@@ -5,7 +5,6 @@ from wtforms.validators import (
     Length,
     ValidationError
 )
-
 from .models import Profile
 
 class SearchPostForm(FlaskForm):
@@ -37,7 +36,7 @@ class UpdateUserNameForm(FlaskForm):
             raise ValidationError("Username is taken")
 
 class UpdateProfilePicForm(FlaskForm):
-    picture = StringField("Profile Picture", validators=[InputRequired, Length(min=1, max=255)])
+    picture = StringField("Profile Picture", validators=[InputRequired(), Length(min=1, max=255)])
     submit_picture = SubmitField("Update profile picture")
 
 class UpdateBioForm(FlaskForm):

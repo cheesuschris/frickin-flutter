@@ -2,8 +2,9 @@ from flask import Blueprint, request, jsonify
 from supabase import create_client
 from ..forms import UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
 from ..models import Profile, Notification, Post, User
-from . import db, current_time
-from sqlalchhemy import func
+from .. import db
+from ..utils import current_time
+from sqlalchemy import func
 from datetime import datetime
 from collections import deque
 import random
@@ -242,7 +243,7 @@ def get_followers():
 
 """User level routes"""
 
-@users.route("/user/change_password", method=["PUT"])
+@users.route("/user/change_password", methods=["PUT"])
 def change_password():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:
@@ -271,7 +272,7 @@ def change_password():
     else:
         return jsonify({"success": False, "error": "No forms filled"}), 404
 
-@users.route("/user/logout", method=["POST"])
+@users.route("/user/logout", methods=["POST"])
 def logout():
     user = get_user(request.headers.get("Authorization", ""))
     if not user:

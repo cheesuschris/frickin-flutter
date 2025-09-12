@@ -1,5 +1,5 @@
 from . import db
-from . import current_time
+from .utils import current_time
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -22,7 +22,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=current_time()) 
 
     def get_share_post_link(self):
-        return f"http://localhost:3000/post/{id}"
+        return f"http://localhost:5000/post/{id}"
     
     @property
     def like_count(self):
@@ -145,4 +145,4 @@ class Profile(db.Model):
 
     def get_share_profile_link(self):
         #TODO change this
-        return f"http://localhost:3000/profile/{id}"
+        return f"http://localhost:5000/profile/{id}"
