@@ -50,7 +50,7 @@ def profile():
             db.session.commit()
         else:
             return jsonify({"success": False, "error": "No data found"}), 404
-    return jsonify({"success": True, "profile": profile}), 200
+    return jsonify({"success": True, "profile": profile.to_dict()}), 200
 
 @users.route("/profile/<int:profile_id>", methods=["GET"])
 def view_profile(profile_id):
@@ -60,7 +60,7 @@ def view_profile(profile_id):
     profile_to_view = Profile.query.filter_by(id=profile_id).first()
     if not profile_to_view:
         return jsonify({"success": False, "error": "User profile you wish to see doesn't exist"}), 404
-    return jsonify({"success": True, "profile": profile_to_view}), 200
+    return jsonify({"success": True, "profile": profile_to_view.to_dict()}), 200
 
 @users.route("/profile/posts", methods=["GET"])
 def get_posts():
@@ -69,7 +69,7 @@ def get_posts():
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     posts = profile.posts
-    return jsonify({"success": True, "posts": posts}), 200
+    return jsonify({"success": True, "posts": [p.to_dict() for p in posts]}), 200
 
 @users.route("/profile/favorites", methods=["GET"])
 def get_favorites(): 
@@ -78,7 +78,7 @@ def get_favorites():
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     posts = profile.liked_posts
-    return jsonify({"success": True, "liked_posts": posts}), 200
+    return jsonify({"success": True, "liked_posts": [p.to_dict() for p in posts]}), 200
 
 @users.route("/profile/comments", methods=["GET"])
 def get_comments():
@@ -87,7 +87,7 @@ def get_comments():
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
     posts = profile.get_commented_posts()
-    return jsonify({"success": True, "commented_posts": posts}), 200
+    return jsonify({"success": True, "commented_posts": [p.to_dict() for p in posts]}), 200
 
 @users.route("/profile/settings", methods=["GET", "POST"])
 def additional_settings():
@@ -106,7 +106,7 @@ def additional_settings():
             db.session.commit()
         else:
             return jsonify({"success": False, "error": "No additional settings provided"}), 404
-    return jsonify({"success": True, "profile": profile}), 200
+    return jsonify({"success": True, "profile": profile.to_dict()}), 200
 
 @users.route("/profile/notifications", methods=["GET"])
 def get_notifications():
@@ -128,7 +128,6 @@ def get_notifications():
             "id": n.id,
             "type": n.notif_type,
             "message": n.message,
-            "post_id": n.post_id,
             "timestamp": n.timestamp.isoformat(),
             "read": n.read
         } for n in unread_notifications],
@@ -137,7 +136,6 @@ def get_notifications():
             "id": n.id,
             "type": n.notif_type,
             "message": n.message,
-            "post_id": n.post_id,
             "timestamp": n.timestamp.isoformat(),
             "read": n.read
         } for n in read_notifications],
@@ -157,7 +155,7 @@ def mark_notification_read(notif_id):
     if notification:
         notification.read = True
         db.session.commit()
-        return jsonify({"success": True, "notification": notification}), 200
+        return jsonify({"success": True, "notification": notification.to_dict()}), 200
     return jsonify({"success": False, "error": "Notification not found"}), 404
 
 @users.route("/profile/follow/<int:user_id>", methods=["POST"])
@@ -186,7 +184,7 @@ def follow_user(user_id):
     return jsonify({
         "success": True,
         "message": f"Now following {target_profile.username}",
-        "following_count": profile.following_count
+        "following_count": func.count(profile.following)
     }), 200
 
 @users.route("/profile/unfollow/<int:user_id>", methods=["DELETE"])
@@ -204,7 +202,7 @@ def unfollow_user(user_id):
     return jsonify({
         "success": True,
         "message": f"No longer following {target_profile.username}",
-        "following_count": profile.following_count
+        "following_count": func.count(profile.following)
     }), 200
 
 @users.route("/profile/following", methods=["GET"])

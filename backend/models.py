@@ -2,10 +2,7 @@ from . import db
 from . import current_time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY
-from hashids import Hashids
 import os, base64
-
-hashids = Hashids("CheesyCarrotLemonBaldmeyaKleeWill1234554321", min_length=6)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -14,6 +11,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 
+#TODO FOR THE FUTURE: Implement a vectordb running at all times & discard exact match for searches
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -21,13 +19,13 @@ class Post(db.Model):
     user = db.Relationship('User', backref = 'posts', lazy=True) #gives us Post.user and User.posts
     title = db.Column(db.String(50))
     recipe = db.Column(db.String(500))
-    image_uri = db.Column(db.String(255))
-    tags = db.Column(ARRAY(db.String))
+    image_uris = db.Column(db.JSON)
+    categories = db.Column(db.JSON)
+    tagged_profile_ids = db.Column(db.JSON)
     timestamp = db.Column(db.DateTime, default=current_time()) 
 
     def get_share_post_link(self):
-        #TODO change this
-        return f"http://localhost:3000/search/{hashids.encode(id)}"
+        return f"http://localhost:3000/post/{id}"
     
     @property
     def like_count(self):
@@ -55,7 +53,8 @@ class Comment(db.Model):
     profile = db.relationship('Profile', backref='comments') #gives us Comment.profile and Profile.comments
     post = db.relationship('Post', backref='comments') #gives us Comment.post and Post.comments
 
-#TODO FOR THE FUTURE: ADD NOTIFICATIONS ON/OFF
+#TODO FOR THE FUTURE: Add notifications on/off
+#TODO FOR THE FUTURE: Add event driven architecture, use kafka for eventbus
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -80,7 +79,7 @@ post_likes = db.Table('post_likes',
 )
 
 #TODO FOR THE FUTURE: Add profile.tagged_posts
-#TODO FOR THE FUTURE: Add profile.collections
+#TODO FOR THE FUTURE: Add profile.collections (like a pinterest board)
 class Profile(db.Model):
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -149,4 +148,4 @@ class Profile(db.Model):
 
     def get_share_profile_link(self):
         #TODO change this
-        return f"http://localhost:3000/profile/{hashids.encode(id)}"
+        return f"http://localhost:3000/profile/{id}"
