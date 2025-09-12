@@ -52,7 +52,6 @@ def profile():
             return jsonify({"success": False, "error": "No data found"}), 404
     return jsonify({"success": True, "profile": profile}), 200
 
-#profile_id, not user_id because later on we might have the user create multiple profiles and delete some as well
 @users.route("/profile/<int:profile_id>", methods=["GET"])
 def view_profile(profile_id):
     user = get_user(request.headers.get("Authorization", ""))
@@ -199,7 +198,7 @@ def unfollow_user(user_id):
     target_profile = Profile.query.filter_by(user_id=user_id).first()
     if not target_profile:
         return jsonify({"success": False, "error": "User to unfollow not found"}), 404
-    profile.unfollow(target_profile) #let this handle the user already being unfollowed
+    profile.unfollow(target_profile)
     db.session.commit()
     #Don't create notif for unfollow
     return jsonify({
@@ -292,20 +291,26 @@ def get_feed():
     if not user:
         return jsonify({"success": False, "error": "User not found"}), 404
     profile = get_or_create_profile(user)
+    tagged_notifications = Notification.query.filter_by(notified_id = profile.id, notif_type = 'tagged_post', read=False).order_by(Notification.timestamp.desc()).all()
+    tagged_posts = [n.post for n in tagged_notifications if n.post]
     unread_notifications = Notification.query.filter_by(notified_id = profile.id, notif_type = 'new_post', read=False).order_by(Notification.timestamp.desc()).limit(35).all()
     unread_posts = [n.post for n in unread_notifications if n.post]
+    unread_posts = unread_posts - tagged_posts # don't include duplicate posts if any
     explore_posts = Post.query.join(User).join(Profile)\
     .order_by( 
         ((Post.likes_count / func.greatest(Profile.follower_count, 1)) * 
          (1.0 / (1 + func.extract('epoch', datetime.now() - Post.timestamp) / 86400)) * 100 
         ).desc() 
     ).limit(15).all() #Score calculation: Likes per follower (1 if no followers), boosted by recency
-    feed = []
+    feed = tagged_posts
     unread_q = deque(unread_posts)
     explore_q = deque(explore_posts)
     while unread_q and explore_q:
-        if random.random() < 0.7: # focus more on following posts
-            feed.append(unread_q.popleft())
+        if random.random() < 0.7: # focus more on following posts (won't be exactly 0.7 because of tagged_posts but idrc rn)
+            if unread_q[0] in tagged_posts: 
+                unread_q.popleft()
+            else:
+                feed.append(unread_q.popleft())
         else:
             feed.append(explore_q.popleft())
     while unread_q:
@@ -313,8 +318,6 @@ def get_feed():
     while explore_q:
         feed.append(explore_q.popleft())
     return jsonify({"success": True, "ordered_feed": feed}), 200
-
-#TODO FOR THE FUTURE: Add profile collections (like a pinterest board) routes, as well as maybe models for them as well
 
 """ ************ Helper functions ************ """
 

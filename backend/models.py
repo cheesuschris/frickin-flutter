@@ -55,13 +55,14 @@ class Comment(db.Model):
     profile = db.relationship('Profile', backref='comments') #gives us Comment.profile and Profile.comments
     post = db.relationship('Post', backref='comments') #gives us Comment.post and Post.comments
 
+#TODO FOR THE FUTURE: ADD NOTIFICATIONS ON/OFF
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     notified_id = db.Column(db.Integer, db.ForeignKey('profiles.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     post = db.Relationship('Post', backref = 'notifications', lazy=True) #gives us Notification.post and Post.notifications
-    notif_type = db.Column(db.String(50)) #Either liked_post, new_post, new_comment, new_follower
+    notif_type = db.Column(db.String(50)) #Either liked_post, new_post, new_comment, new_follower, tagged_post
     message = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime, default=current_time())
     read = db.Column(db.Boolean, default = False)
@@ -78,6 +79,8 @@ post_likes = db.Table('post_likes',
     db.Column('created_at', db.DateTime, default=current_time())
 )
 
+#TODO FOR THE FUTURE: Add profile.tagged_posts
+#TODO FOR THE FUTURE: Add profile.collections
 class Profile(db.Model):
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -147,4 +150,3 @@ class Profile(db.Model):
     def get_share_profile_link(self):
         #TODO change this
         return f"http://localhost:3000/profile/{hashids.encode(id)}"
-   

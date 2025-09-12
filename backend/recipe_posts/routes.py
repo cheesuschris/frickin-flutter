@@ -15,7 +15,6 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 """Post level routes"""
 
-#TODO add tags to a post
 @recipe_posts.route("/post", methods=["POST"])
 def post():
     user = get_user(request.headers.get("Authorization", ""))
@@ -30,7 +29,17 @@ def post():
         post = Post(user_id = user.id, title = data.get("title"), recipe = data.get("recipe"), image_uri = data.get("image"), tags = data.get("tags"), timestamp = current_time(), likes_count = 0)
         db.session.add(post)
         db.session.flush()
+        profiles_tagged = post.tags
         notifications = []
+        for tag in profiles_tagged:
+            notif = Notification(
+                notified_id = tag,
+                post_id = post.id,
+                type="tagged_post",
+                message=f"{profile.username} has tagged you in a post!",
+                timestamp = current_time()
+            )
+            notifications.append(notif)
         for follower in profile.followers:
             notif = Notification(
                 notified_id=follower.id,  
@@ -100,7 +109,6 @@ def delete_post(post_id):
     db.session.commit()
     return jsonify({"success": True}), 200
 
-#TODO add notifications
 @recipe_posts.route("/post/<int:post_id>/toggle_like", methods=["PUT"])
 def toggle_like_on_post(post_id):
     user = get_user(request.headers.get("Authorization", ""))
@@ -114,7 +122,11 @@ def toggle_like_on_post(post_id):
         return jsonify({"success": False, "error": "im crine bro liked his own post😹😹😹"}), 400
     if profile.has_liked_post(post):
         profile.like_post(post)
-        db.session.commit()
+        previous_notif = Notification.query.filter_by(message = f"{profile.username} liked your post!").first()
+        if not previous_notif:
+            notif = Notification(notified_id = post.user.profile.id, post_id = post.id, type = "liked_post", message = f"{profile.username} liked your post!", timestamp = current_time())
+            db.session.add(notif)
+            db.session.commit()
     else:
         profile.unlike_post(post)
         db.session.commit()
@@ -146,6 +158,10 @@ def comment(post_id):
         if not comment_form.validate:
             return jsonify({"success": False, "error": comment_form.errors}), 400
         profile.comment_on_post(post, data.get("content"))
+        #don't care about spam comments, each one is unique
+        notif = Notification(notified_id = post.user.profile.id, post_id = post.id, type = "new_comment", message = f"{profile.username} commented on your post!", timestamp = current_time())
+        db.session.add(notif)
+        db.session.commit()
         return jsonify({"success": True, "comment": comment}), 200
     else:
         return jsonify({"success": False, "error": "Fill in the blanks bro"}), 404
@@ -207,24 +223,30 @@ def get_all_comments(post_id):
 
 """General recipe_posts level routes (not user feed)"""
 
-#TODO everything below
+#TODO FOR THE FUTURE: 
 @recipe_posts.route("/search", methods=["GET"])
 def search():
-    #Will search for both users and posts, UI would have tabs to switch between search filters
-    print("Kenny do elastic search with this")
+    q = request.args.get("q")
 
-"""
-# Discovery
-GET    /recipe_posts/search?q=chicken        # Search recipes
-GET    /recipe_posts/category               # Dietary preference recipes
-GET    /recipe_posts/trending               # Trending recipes
-GET    /recipe_posts/recent                 # Recent recipes
-GET    /recipe_posts/random                 # Random recipe
+@recipe_posts.route("/category/<str:category_str>", methods=["GET"])
+def category(category_str):
+    print("Kenny")
 
-# Categories
-GET    /recipe_posts/categories             # All categories
-GET    /recipe_posts/category/breakfast     # Breakfast recipes
-"""
+@recipe_posts.route("/categories", methods=["GET"])
+def get_all_categories():
+    print("Kenny")
+
+@recipe_posts.route("/recent", methods=["GET"])
+def get_recents():
+    print("Kenny")
+
+@recipe_posts.route("/random", methods=["GET"])
+def get_random():
+    print("Kenny")
+
+@recipe_posts.route("/trending", methods=["GET"])
+def get_trending():
+    print("Kenny")
 
 """ ************ Helper functions ************ """
 
