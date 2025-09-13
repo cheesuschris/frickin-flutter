@@ -11,3 +11,10 @@ A Flutter app with Supabase authentication built from scratch. This app serves a
     cd frontend
     flutter run
     2
+
+# Enviornment Variables
+ - Add the following enviorment variables to the .env file
+    SUPABASE_URL
+    SUPABASE_ANON_KEY
+    FLASK_BACKEND_URL
+    PEXELS_API_KEY
