@@ -54,6 +54,3 @@ linux/.dart_tool/
 *.tmp
 *.swp
 .DS_Store
-
-#mongodb connection string
-**.env

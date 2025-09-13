@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cooking_app/pages/prof.dart';
 import 'package:cooking_app/pages/favorites.dart';
@@ -323,7 +324,7 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
   }
 
   Future<String> fetchRandomImageUrl(String query) async {
-    final apiKey = dotenv.env['PEXELS_API'];
+    const String apiKey = String.fromEnvironment('PEXELS_API');
     final url = Uri.parse(
       'https://api.pexels.com/v1/search?query=$query&per_page=30',
     );
