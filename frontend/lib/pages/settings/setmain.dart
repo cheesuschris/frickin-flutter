@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Setmain extends StatefulWidget {
   const Setmain({super.key});
@@ -59,18 +60,4 @@ class _Setmain extends State<Setmain> {
       ],
     );
   }
-}
-
-final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
-if (accessToken == null) throw Exception("User not logged in");
-
-final response = await http.get(
-  Uri.parse('http://localhost:5000/profile'),
-  headers: {'Authorization': 'Bearer $accessToken'},
-);
-
-if (response.statusCode == 200) {
-  return jsonDecode(response.body);
-} else {
-  throw Exception('Failed to fetch profile');
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 

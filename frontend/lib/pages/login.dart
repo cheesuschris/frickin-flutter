@@ -2,6 +2,9 @@ import 'package:cooking_app/auth/auth.dart';
 import 'package:cooking_app/pages/reset.dart';
 import 'package:flutter/material.dart';
 import 'package:cooking_app/pages/reg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

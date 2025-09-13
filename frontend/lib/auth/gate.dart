@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cooking_app/pages/login.dart';
 import 'package:cooking_app/pages/home.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthGate extends StatelessWidget {
 
   @override
@@ -48,7 +49,7 @@ class AuthGate extends StatelessWidget {
 
         final authState = snapshot.data;
         if (authState?.session != null) {
-          sendDataToBackend();
+          sendDataToBackend({});
           return const HomePage();
         }
         return const LoginPage();

@@ -5,12 +5,13 @@ import 'package:cooking_app/pages/favorites.dart';
 import 'package:cooking_app/pages/landing.dart';
 import 'package:cooking_app/pages/search.dart';
 import 'package:cooking_app/pages/post.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 //Do sendDataToBackend with map of changes (feed of ~20 recipes) when opening the home page
 class HomePage extends StatefulWidget {

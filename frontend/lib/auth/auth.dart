@@ -1,5 +1,6 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 class Auth {
   final SupabaseClient _supabase = Supabase.instance.client;
   String? get userID => _supabase.auth.currentUser?.id;
