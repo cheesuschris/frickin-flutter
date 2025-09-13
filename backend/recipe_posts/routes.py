@@ -7,6 +7,8 @@ from ..utils import current_time
 from sqlalchemy import func
 import re
 import random
+from elasticsearch import Elasticsearch
+from sentence_transformers import SentenceTransformer
 
 recipe_posts = Blueprint("recipe_posts", __name__)
 
@@ -227,25 +229,49 @@ def get_all_comments(post_id):
     return jsonify({"success": True, "comments": [c.to_dict for c in comments]}), 200
 
 """General recipe_posts level routes (not user feed)"""
-
+es = Elasticsearch(
+    "https://localhost:9200",
+    basic_auth=("elastic", "your-generated-password"), # e.g., "4eb=Q+*7es9qpk1fq0"
+    verify_certs=False # Only for local testing with self-signed certs
+)
+index_name = "recipe_posts"
+mapping = {
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text"  # Standard text field for keyword search
+      },
+      "content": {
+        "type": "text"
+      },
+      "title_embedding": { # The vector field!
+        "type": "dense_vector",
+        "dims": 384,      # Must match the output of our model (all-MiniLM-L6-v2 -> 384)
+        "index": True,    # MUST be 'true' to enable fast approximate kNN search
+        "similarity": "cosine" # The distance metric: 'cosine', 'l2_norm', 'dot_product'
+      }
+    }
+  }
+}
+if es.indices.exists(index=index_name):
+    es.indices.delete(index=index_name)
+es.indices.create(index=index_name, body=mapping)
+model = SentenceTransformer('all-MiniLM-L6-v2')
 @recipe_posts.route("/search", methods=["GET"])
-def search():
-    user = get_user(request.headers.get("Authorization", ""))
-    if not user:
-        return jsonify({"success": False, "error": "User not found"}), 404
-    # data might not actually be there, so it's not required --> use request.args.get("q") (query)
-    q = request.args.get("q").strip()
-    if not q:
-        popular_posts = Post.query.order_by(Post.like_count.desc()).limit(40).all()
-        popular_profiles = Profile.query.order_by(func.count(Profile.followers).desc()).limit(10).all()
-        return jsonify({"success": True, "default_search_page": True, "popular_posts": [p.to_dict() for p in popular_posts], "popular_profiles": [p.to_dict() for p in popular_profiles]}), 200
-    if len(q) > 100:
-        return jsonify({"success": False, "error": "search too long"}), 400
-    if not re.match(r'^[a-zA-Z0-9\s\-_.@\']+$', q):
-        return jsonify({"success": False, "error": "invalid input sorry"}), 400
-    posts = Post.query.filter(func.lower(Post.title).like(func.lower(f'%{q}%')) | func.lower(Post.content).like(func.lower(f'%{q}%'))).order_by(Post.likes_count.desc()).limit(40).all()
-    profiles = Profile.query.filter(func.lower(Profile.username).like(func.lower(f'%{q}%'))|func.lower(Profile.bio).like(func.lower(f'%{q}%'))).order_by(func.count(Profile.followers).desc()).limit(10).all()
-    return jsonify({"success": True, "default_search_page": False, "exact_match_posts": [p.to_dict() for p in posts.to_dict], "exact_match_profiles": [p.to_dict() for p in profiles.to_dict]}), 200
+def search(query):
+    query_embed = model.encode(query).tolist()
+    knn_query = {
+        "knn": {
+            "field": "title_embeding",
+            "query_vector": query_embed,
+            "k": 5,
+            "num_candidiates": 50
+        },
+        "fields": ["title"], # need to change based on the requirements of whatever json structure we use
+        "_source": False
+    }
+    response = es.search(index=index_name, body=knn_query)
+    return response #change to whatever you want to display ig?
 
 @recipe_posts.route("/category", methods=["GET"])
 def category(category_str):
