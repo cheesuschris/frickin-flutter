@@ -313,10 +313,8 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
       future: _imageUrlFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          //loading image
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError || !snapshot.hasData) {
-          //smth went wrong, jus display an amber cheese background
           return Container(
             color: Colors.amber,
             child: Column(children: widget.children),
