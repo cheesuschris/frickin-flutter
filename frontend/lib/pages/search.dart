@@ -41,39 +41,44 @@ class _SearchBarC extends State<SearchPage> {
   //Implement fuzzy matching search logic (for now, return all. later, return top k results.)
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    
     return MainScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: SearchAnchor(
-          builder: (BuildContext context, SearchController controller) {
-            return SearchBar(
-              controller: controller,
-              padding: const WidgetStatePropertyAll<EdgeInsets>(
-                EdgeInsets.symmetric(horizontal: 12),
-              ),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (_) {
-                controller.openView();
-              },
-              leading: const Icon(Icons.search),
-            );
-          },
-          suggestionsBuilder:
-              (BuildContext context, SearchController controller) {
-                return List<ListTile>.generate(5, (int index) {
-                  final String item = 'We need searching logic $index';
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      setState(() {
-                        controller.closeView(item);
-                      });
-                    },
-                  );
-                });
-              },
+        padding: EdgeInsets.all(screenWidth * 0.03),
+        child: SizedBox(
+          width: double.infinity,
+          child: SearchAnchor(
+            builder: (BuildContext context, SearchController controller) {
+              return SearchBar(
+                controller: controller,
+                padding: WidgetStatePropertyAll<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                ),
+                onTap: () {
+                  controller.openView();
+                },
+                onChanged: (_) {
+                  controller.openView();
+                },
+                leading: const Icon(Icons.search),
+              );
+            },
+            suggestionsBuilder:
+                (BuildContext context, SearchController controller) {
+                  return List<ListTile>.generate(5, (int index) {
+                    final String item = 'We need searching logic $index';
+                    return ListTile(
+                      title: Text(item),
+                      onTap: () {
+                        setState(() {
+                          controller.closeView(item);
+                        });
+                      },
+                    );
+                  });
+                },
+          ),
         ),
       ),
       currentIndex: 1,
