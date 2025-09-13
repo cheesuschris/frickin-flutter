@@ -1,0 +1,1 @@
+To contrubute to this project create a branch from the development branch. Label it feat: {Name of feature} and submit a merge request into development once completed. Do not push directly to development. Use a staging enviornment before formatting the master branch to development for release cycles.
