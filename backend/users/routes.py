@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
-from ..forms import UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
-from ..models import Profile, Notification, Post, User
-from .. import db
-from ..utils import current_time
+from forms import UpdateUserNameForm, UpdateProfilePicForm, UpdateBioForm
+from models import Profile, Notification, Post, User
+from __init__ import db
+from utils import current_time
 from sqlalchemy import func
 from datetime import datetime
 from collections import deque

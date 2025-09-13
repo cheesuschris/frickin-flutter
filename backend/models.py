@@ -1,5 +1,5 @@
-from . import db
-from .utils import current_time
+from __init__ import db
+from utils import current_time
 
 class User(db.Model):
     __tablename__ = 'user'

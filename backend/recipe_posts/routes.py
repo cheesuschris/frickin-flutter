@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 from supabase import create_client
-from ..forms import CreateRecipeForm, CommentForm
-from ..models import Post, Notification, Profile, User, Comment
-from .. import db
-from ..utils import current_time
+from forms import CreateRecipeForm, CommentForm
+from models import Post, Notification, Profile, User, Comment
+from __init__ import db
+from utils import current_time
 from sqlalchemy import func
 import re
 import random

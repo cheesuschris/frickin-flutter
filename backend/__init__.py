@@ -9,8 +9,8 @@ def create_app(test_config=None):
     db.init_app(app)
 
     #internal imports (no circular imports)
-    from .users.routes import users
-    from .recipe_posts.routes import recipe_posts
+    from users.routes import users
+    from recipe_posts.routes import recipe_posts
     app.register_blueprint(users)
     app.register_blueprint(recipe_posts)
     

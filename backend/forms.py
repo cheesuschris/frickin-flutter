@@ -5,7 +5,7 @@ from wtforms.validators import (
     Length,
     ValidationError
 )
-from .models import Profile
+from models import Profile
 
 class SearchPostForm(FlaskForm):
     search_query = StringField(
