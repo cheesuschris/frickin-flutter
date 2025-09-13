@@ -1,10 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:cooking_app/pages/prof.dart';
-import 'package:cooking_app/pages/favorites.dart';
-import 'package:cooking_app/pages/landing.dart';
-import 'package:cooking_app/pages/search.dart';
-import 'package:cooking_app/pages/post.dart';
+import 'package:cooking_app/widgets/main_scaffold_with_bottom_navbar.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,6 +18,28 @@ class HomePage extends StatefulWidget {
 //App's frosted glowing card on top of the random background
 class ScrollableFrostedCard extends StatelessWidget {
   const ScrollableFrostedCard({super.key});
+
+  Widget _buildCategoryItem(String title, String imageUrl, double screenWidth) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: screenWidth * 0.06,
+          backgroundImage: NetworkImage(imageUrl),
+          backgroundColor: Colors.black,
+        ),
+        SizedBox(height: screenWidth * 0.01),
+        Text(
+          title,
+          style: GoogleFonts.lato(
+            color: Colors.black,
+            fontSize: screenWidth * 0.03,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +94,10 @@ class ScrollableFrostedCard extends StatelessWidget {
                       Text(
                         "Featured Recipes:",
                         style: GoogleFonts.truculenta(
-                          fontSize: screenWidth * 0.08, 
+                          fontSize: screenWidth * 0.06, 
                           color: Colors.blue,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: screenHeight * 0.02),
                       Text(
@@ -90,138 +109,19 @@ class ScrollableFrostedCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: screenHeight * 0.02), 
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), 
-                        child: Row(
-                          children: [
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08, 
-                                  backgroundImage: NetworkImage(
-                                    'https://zhangcatherine.com/wp-content/uploads/2022/09/dog-cake.jpg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Desserts",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08,
-                                  backgroundImage: NetworkImage(
-                                    'https://static01.nyt.com/images/2024/05/16/multimedia/fs-tandoori-chicken-hmjq/fs-tandoori-chicken-hmjq-mediumSquareAt3X.jpg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Proteins",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08, 
-                                  backgroundImage: NetworkImage(
-                                    'https://static.vecteezy.com/system/resources/thumbnails/049/110/238/small_2x/close-up-of-colorful-refreshing-drinks-with-ice-cubes-and-bubbles-perfect-for-summer-and-party-themes-photo.jpeg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Drinks",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08, 
-                                  backgroundImage: NetworkImage(
-                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNt7pl88JtgGQ_9zUPouLb8Va_WOl4bkZJPg&s',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Luxurious",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08,
-                                  backgroundImage: NetworkImage(
-                                    'https://assets.clevelandclinic.org/transform/40f5393d-e6d3-4968-90f2-cbd894b67779/wholeGrainProducts-842797430-770x533-1_jpg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Carbs",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08, 
-                                  backgroundImage: NetworkImage(
-                                    'https://static.vecteezy.com/system/resources/thumbnails/002/454/867/small_2x/chronometer-timer-counter-isolated-icon-free-vector.jpg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Cheap & Fast",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.08,
-                                  backgroundImage: NetworkImage(
-                                    'https://png.pngtree.com/png-vector/20190329/ourmid/pngtree-vector-shuffle-icon-png-image_889552.jpg',
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                                Text(
-                                  "Random Recipe",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      Wrap(
+                        spacing: screenWidth * 0.02,
+                        runSpacing: screenHeight * 0.01,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          _buildCategoryItem("Desserts", 'https://zhangcatherine.com/wp-content/uploads/2022/09/dog-cake.jpg', screenWidth),
+                          _buildCategoryItem("Proteins", 'https://static01.nyt.com/images/2024/05/16/multimedia/fs-tandoori-chicken-hmjq/fs-tandoori-chicken-hmjq-mediumSquareAt3X.jpg', screenWidth),
+                          _buildCategoryItem("Drinks", 'https://static.vecteezy.com/system/resources/thumbnails/049/110/238/small_2x/close-up-of-colorful-refreshing-drinks-with-ice-cubes-and-bubbles-perfect-for-summer-and-party-themes-photo.jpeg', screenWidth),
+                          _buildCategoryItem("Luxurious", 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNt7pl88JtgGQ_9zUPouLb8Va_WOl4bkZJPg&s', screenWidth),
+                          _buildCategoryItem("Carbs", 'https://assets.clevelandclinic.org/transform/40f5393d-e6d3-4968-90f2-cbd894b67779/wholeGrainProducts-842797430-770x533-1_jpg', screenWidth),
+                          _buildCategoryItem("Cheap & Fast", 'https://static.vecteezy.com/system/resources/thumbnails/002/454/867/small_2x/chronometer-timer-counter-isolated-icon-free-vector.jpg', screenWidth),
+                          _buildCategoryItem("Random Recipe", 'https://png.pngtree.com/png-vector/20190329/ourmid/pngtree-vector-shuffle-icon-png-image_889552.jpg', screenWidth),
+                        ],
                       ),
                       SizedBox(height: screenHeight * 0.03),
                       Divider(color: Colors.black, thickness: 2),
@@ -316,7 +216,7 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError || !snapshot.hasData) {
           return Container(
-            color: Colors.amber,
+            color: Colors.white,
             child: Column(children: widget.children),
           );
         } else {
@@ -378,79 +278,49 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = size.width;
     final screenHeight = size.height;
     
-    return Scaffold(
+    return MainScaffold(
       body: _BackgroundRNG(
         children: [
-          Text(
-            'Welcome, chef ${_currentUser?.email ?? "Guest"}!',
-            style: TextStyle(
-              fontSize: screenWidth * 0.06, 
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Welcome, chef ',
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05, 
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '${_currentUser?.email ?? "Guest"}!',
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05, 
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.01), 
+              Text(
+                'Discover and post your favorite recipes!',
+                style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.amber),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          SizedBox(height: screenHeight * 0.02), 
-          Text(
-            'Discover and post your favorite recipes and cooks!',
-            style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.white),
-          ),
-          SizedBox(height: screenHeight * 0.02),
           Expanded(
             child: ScrollableFrostedCard(),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.amber,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Post'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LandingPage()),
-              );
-              break;
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SearchPage()),
-              );
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const PostPage()),
-              );
-              break;
-            case 3:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FavoritesPage()),
-              );
-              break;
-            case 4:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
-              );
-              break;
-          }
-        },
-      ),
+      currentIndex: 0,
     );
   }
 }

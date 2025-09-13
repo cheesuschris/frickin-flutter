@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cooking_app/pages/landing.dart';
+import 'package:cooking_app/pages/home.dart';
 import 'package:cooking_app/pages/search.dart';
 import 'package:cooking_app/pages/favorites.dart';
 import 'package:cooking_app/pages/prof.dart';
@@ -21,7 +21,7 @@ class MainScaffold extends StatelessWidget {
     Widget page;
     switch (index) {
       case 0:
-        page = const LandingPage();
+        page = const HomePage();
         break;
       case 1:
         page = const SearchPage();
