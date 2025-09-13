@@ -10,7 +10,6 @@ import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 //Do sendDataToBackend with map of changes (feed of ~20 recipes) when opening the home page
@@ -27,6 +26,8 @@ class ScrollableFrostedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final screenHeight = size.height;
+    final screenWidth = size.width;
     debugPrint('Screen Width: ${size.width}, Screen Height: ${size.height}');
 
     return Center(
@@ -35,8 +36,8 @@ class ScrollableFrostedCard extends StatelessWidget {
         children: [
           // Glow layer behind the card
           Container(
-            width: MediaQuery.of(context).size.width * 0.95,
-            height: 650,
+            width: screenWidth * 0.95,
+            height: screenHeight * 0.5,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
@@ -56,7 +57,7 @@ class ScrollableFrostedCard extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 width: double.infinity,
-                constraints: const BoxConstraints(maxHeight: 650),
+                constraints: BoxConstraints(maxHeight: screenHeight * 0.5),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(20),
@@ -64,233 +65,196 @@ class ScrollableFrostedCard extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.3),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 20,
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.04, 
+                  vertical: screenHeight * 0.025, 
                 ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 850,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Featured Recipes:",
-                            style: GoogleFonts.truculenta(
-                              fontSize: 80,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  20,
-                                  (i) => Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 20,
-                                    ),
-                                    child: Text(
-                                      "Recipe ${i + 1}: [Insert name, content, and initial image posting of recipe here]",
-                                      style: GoogleFonts.lato(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Featured Recipes:",
+                        style: GoogleFonts.truculenta(
+                          fontSize: screenWidth * 0.08, 
+                          color: Colors.blue,
+                        ),
                       ),
-                    ),
-
-                    //EXPLORE BY CATEGORY
-                    //SHOULD DIRECT USERS TO THE SEARCH WITH FILTER ALREADY ENABLED
-                    SizedBox(
-                      width: 650,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Explore by category or diet:",
-                            style: GoogleFonts.truculenta(
-                              fontSize: 50,
-                              color: Colors.blueGrey,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 60),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
+                      SizedBox(height: screenHeight * 0.02),
+                      Text(
+                        "Explore by category or diet:",
+                        style: GoogleFonts.truculenta(
+                          fontSize: screenWidth * 0.05, 
+                          color: Colors.blueGrey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: screenHeight * 0.02), 
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), 
+                        child: Row(
+                          children: [
+                            Column(
                               children: [
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://zhangcatherine.com/wp-content/uploads/2022/09/dog-cake.jpg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Desserts",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08, 
+                                  backgroundImage: NetworkImage(
+                                    'https://zhangcatherine.com/wp-content/uploads/2022/09/dog-cake.jpg',
+                                  ),
+                                  backgroundColor: Colors.black,
                                 ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://static01.nyt.com/images/2024/05/16/multimedia/fs-tandoori-chicken-hmjq/fs-tandoori-chicken-hmjq-mediumSquareAt3X.jpg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Proteins",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://static.vecteezy.com/system/resources/thumbnails/049/110/238/small_2x/close-up-of-colorful-refreshing-drinks-with-ice-cubes-and-bubbles-perfect-for-summer-and-party-themes-photo.jpeg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Drinks",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNt7pl88JtgGQ_9zUPouLb8Va_WOl4bkZJPg&s',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Luxurious",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://assets.clevelandclinic.org/transform/40f5393d-e6d3-4968-90f2-cbd894b67779/wholeGrainProducts-842797430-770x533-1_jpg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Carbs",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://static.vecteezy.com/system/resources/thumbnails/002/454/867/small_2x/chronometer-timer-counter-isolated-icon-free-vector.jpg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Cheap & Fast",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: NetworkImage(
-                                        'https://png.pngtree.com/png-vector/20190329/ourmid/pngtree-vector-shuffle-icon-png-image_889552.jpg',
-                                      ),
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    Text(
-                                      "Random Recipe",
-                                      style: GoogleFonts.lato(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  "Desserts",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-
-                          //Friends' posts, should be sorted by time
-                          SizedBox(height: 70),
-                          Divider(color: Colors.black, thickness: 2),
-                          SizedBox(height: 20),
-                          Text(
-                            "Your friends' dishes:",
-                            style: GoogleFonts.truculenta(
-                              fontSize: 50,
-                              color: Colors.blueGrey,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  20,
-                                  (i) => Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 20,
-                                    ),
-                                    child: Text(
-                                      "Recipe ${i + 1}: [Insert name, content, and initial image posting of recipe here]",
-                                      style: GoogleFonts.lato(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08,
+                                  backgroundImage: NetworkImage(
+                                    'https://static01.nyt.com/images/2024/05/16/multimedia/fs-tandoori-chicken-hmjq/fs-tandoori-chicken-hmjq-mediumSquareAt3X.jpg',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Proteins",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
                                   ),
                                 ),
+                              ],
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08, 
+                                  backgroundImage: NetworkImage(
+                                    'https://static.vecteezy.com/system/resources/thumbnails/049/110/238/small_2x/close-up-of-colorful-refreshing-drinks-with-ice-cubes-and-bubbles-perfect-for-summer-and-party-themes-photo.jpeg',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Drinks",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08, 
+                                  backgroundImage: NetworkImage(
+                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNt7pl88JtgGQ_9zUPouLb8Va_WOl4bkZJPg&s',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Luxurious",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08,
+                                  backgroundImage: NetworkImage(
+                                    'https://assets.clevelandclinic.org/transform/40f5393d-e6d3-4968-90f2-cbd894b67779/wholeGrainProducts-842797430-770x533-1_jpg',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Carbs",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08, 
+                                  backgroundImage: NetworkImage(
+                                    'https://static.vecteezy.com/system/resources/thumbnails/002/454/867/small_2x/chronometer-timer-counter-isolated-icon-free-vector.jpg',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Cheap & Fast",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: screenWidth * 0.08,
+                                  backgroundImage: NetworkImage(
+                                    'https://png.pngtree.com/png-vector/20190329/ourmid/pngtree-vector-shuffle-icon-png-image_889552.jpg',
+                                  ),
+                                  backgroundColor: Colors.black,
+                                ),
+                                Text(
+                                  "Random Recipe",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.03),
+                      Divider(color: Colors.black, thickness: 2),
+                      SizedBox(height: screenHeight * 0.02), 
+                      Text(
+                        "Your friends' dishes:",
+                        style: GoogleFonts.truculenta(
+                          fontSize: screenWidth * 0.05, 
+                          color: Colors.blueGrey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(
+                          10,
+                          (i) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                            ),
+                            child: Text(
+                              "Recipe ${i + 1}: [Insert name, content, and initial image posting of recipe here]",
+                              style: GoogleFonts.lato(
+                                fontSize: screenWidth * 0.04,
+                                color: Colors.black,
                               ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -343,6 +307,8 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    
     return FutureBuilder<String>(
       future: _imageUrlFuture,
       builder: (context, snapshot) {
@@ -368,8 +334,10 @@ class _BackgroundRNGState extends State<_BackgroundRNG> {
                 ),
               ),
             ),
-            padding: const EdgeInsets.all(32),
-            child: Column(children: widget.children),
+            padding: EdgeInsets.all(screenWidth * 0.08), 
+            child: Column(
+              children: widget.children,
+            ),
           );
         }
       },
@@ -408,29 +376,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final screenWidth = size.width;
+    final screenHeight = size.height;
+    
     return Scaffold(
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: _BackgroundRNG(
-          children: [
-            Text(
-              'Welcome, chef ${_currentUser?.email ?? "Guest"}!',
-              style: TextStyle(
-                fontSize: 45,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+      body: _BackgroundRNG(
+        children: [
+          Text(
+            'Welcome, chef ${_currentUser?.email ?? "Guest"}!',
+            style: TextStyle(
+              fontSize: screenWidth * 0.06, 
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            SizedBox(height: 15),
-            Text(
-              'Discover and post your favorite recipes and cooks!',
-              style: TextStyle(fontSize: 30, color: Colors.white),
-            ),
-            SizedBox(height: 35),
-            ScrollableFrostedCard(),
-          ],
-        ),
+          ),
+          SizedBox(height: screenHeight * 0.02), 
+          Text(
+            'Discover and post your favorite recipes and cooks!',
+            style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.white),
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          Expanded(
+            child: ScrollableFrostedCard(),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.amber,
