@@ -47,7 +47,7 @@ class MainScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Text("Cheesy Cooking app"),
+        title: Text("Recipedia"),
         actions: actions,
       ),
       body: body,
@@ -55,9 +55,9 @@ class MainScaffold extends StatelessWidget {
         currentIndex: currentIndex,
         onTap: (index) => _navigate(context, index),
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.amber,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white,
+        backgroundColor: Color(0xfff8f7f6),
+        selectedItemColor: Color(0xff1a1815),
+        unselectedItemColor: Color(0xff2c2c2c),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),

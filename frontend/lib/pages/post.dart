@@ -25,7 +25,7 @@ class _PostPageState extends State<PostPage> {
     if (accessToken == null) return;
 
     final response = await http.post(
-      Uri.parse('http://localhost:5000/post'),
+      Uri.parse('http://localhost:5000/recipe_posts/post'),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ class _PostPageState extends State<PostPage> {
       body: jsonEncode(data),
     );
     if (response.statusCode == 200) {
-      print("Profile sent successfully");
+      print("Post created successfully");
     } else {
       print("Failed: ${response.statusCode}");
     }
