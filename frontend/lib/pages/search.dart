@@ -22,16 +22,15 @@ class _SearchBarC extends State<SearchPage> {
     final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
     if (accessToken == null) return;
 
-    final response = await http.post(
-      Uri.parse('http://localhost:5000/search'),
+    final response = await http.get(
+      Uri.parse('http://localhost:5000/recipe_posts/search'),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(data),
     );
     if (response.statusCode == 200) {
-      print("Profile sent successfully");
+      print("Search loaded successfully");
     } else {
       print("Failed: ${response.statusCode}");
     }

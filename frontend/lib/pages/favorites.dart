@@ -24,27 +24,27 @@ class _FavoritesPageState extends State<FavoritesPage> {
     if (accessToken == null) return;
 
     final response1 = await http.get(
-      Uri.parse('http://localhost:5000/favorites'),
+      Uri.parse('http://localhost:5000/users/profile/favorites'),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
     );
     if (response1.statusCode == 200) {
-      print("Profile sent successfully");
+      print("Favorites loaded successfully");
     } else {
       print("Failed: ${response1.statusCode}");
     }
     
     final response2 = await http.get(
-      Uri.parse('http://localhost:5000/comments'),
+      Uri.parse('http://localhost:5000/users/profile/comments'),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
     );
     if (response2.statusCode == 200) {
-      print("Profile sent successfully");
+      print("Comments loaded successfully");
     } else {
       print("Failed: ${response2.statusCode}");
     }

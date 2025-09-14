@@ -23,16 +23,15 @@ class _Setmain extends State<Setmain> {
     final accessToken = Supabase.instance.client.auth.currentSession?.accessToken;
     if (accessToken == null) return;
 
-    final response = await http.post(
-      Uri.parse('http://localhost:5000/settings'),
+    final response = await http.get(
+      Uri.parse('http://localhost:5000/users/profile/settings'),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(data),
     );
     if (response.statusCode == 200) {
-      print("Profile sent successfully");
+      print("Settings loaded successfully");
     } else {
       print("Failed: ${response.statusCode}");
     }

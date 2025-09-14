@@ -47,7 +47,7 @@ class MainScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: Text("Cheesy Recipedia"),
+        title: Text("Recipedia"),
         actions: actions,
       ),
       body: body,
